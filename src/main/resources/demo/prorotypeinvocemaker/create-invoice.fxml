@@ -9,7 +9,7 @@
       fx:controller="demo.prorotypeinvocemaker.CreateInvoiceController"
       spacing="15" style="-fx-padding: 20;">
 
-    <!-- ... previous code ... -->
+
     <Label text="New Invoice" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
     <!-- Top Row: Customer Type AND Currency -->

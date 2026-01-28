@@ -15,7 +15,7 @@ import java.util.Properties;
 public class CompanyDetailsController {
 
     @FXML private TextField companyNameField;
-    @FXML private TextField companyIdField; // <--- NEW FIELD
+    @FXML private TextField companyIdField;
     @FXML private TextField addressLine1Field;
     @FXML private TextField addressLine2Field;
     @FXML private TextField cityField;
@@ -39,7 +39,7 @@ public class CompanyDetailsController {
         Properties properties = new Properties();
         // Save all fields
         properties.setProperty("companyName", companyNameField.getText());
-        properties.setProperty("companyId", companyIdField.getText()); // <--- SAVE NEW FIELD
+        properties.setProperty("companyId", companyIdField.getText());
         properties.setProperty("addressLine1", addressLine1Field.getText());
         properties.setProperty("addressLine2", addressLine2Field.getText());
         properties.setProperty("city", cityField.getText());
@@ -80,7 +80,7 @@ public class CompanyDetailsController {
                 // Load all fields
                 saveLocationField.setText(properties.getProperty("saveLocation", ""));
                 companyNameField.setText(properties.getProperty("companyName", ""));
-                companyIdField.setText(properties.getProperty("companyId", "")); // <--- LOAD NEW FIELD
+                companyIdField.setText(properties.getProperty("companyId", "")); //
                 addressLine1Field.setText(properties.getProperty("addressLine1", ""));
                 addressLine2Field.setText(properties.getProperty("addressLine2", ""));
                 cityField.setText(properties.getProperty("city", ""));

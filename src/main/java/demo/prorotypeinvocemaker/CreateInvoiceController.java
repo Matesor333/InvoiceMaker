@@ -236,14 +236,14 @@ public class CreateInvoiceController {
         return null;
     }
     private void showSuccess(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION); // <--- Key Change: INFORMATION
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null); // Removes the big header text to make it cleaner
         alert.setContentText(content);
         alert.showAndWait();
     }
     private void showError(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR); // <--- Key Change: ERROR
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText("Error");
         alert.setContentText(content);

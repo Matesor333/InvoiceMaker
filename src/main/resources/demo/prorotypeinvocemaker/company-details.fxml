@@ -56,7 +56,7 @@
         <Label text="Tax/VAT Number:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
         <TextField fx:id="taxNumberField" GridPane.rowIndex="8" GridPane.columnIndex="1"
                    prefWidth="300" promptText="Optional"/>
-        <!-- ... previous rows ... -->
+
 
         <!-- Row 9: Invoice Save Location -->
         <Label text="Invoice Save Folder:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
