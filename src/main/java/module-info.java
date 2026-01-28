@@ -5,6 +5,7 @@ module demo.prorotypeinvocemaker {
     requires org.slf4j;
     requires layout;
     requires kernel;
+    requires java.desktop;
 
     opens demo.prorotypeinvocemaker to javafx.fxml;
     exports demo.prorotypeinvocemaker;

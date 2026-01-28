@@ -15,8 +15,9 @@
                     <fx:include source="company-details.fxml"/>
                 </Tab>
                 <Tab text="Past Invoices">
-                    <Label text="Past Invoices - Coming Soon"/>
+                    <fx:include source="past-invoices.fxml"/>
                 </Tab>
+
                 <Tab text="Create Invoice">
                     <fx:include source="create-invoice.fxml"/>
                 </Tab>

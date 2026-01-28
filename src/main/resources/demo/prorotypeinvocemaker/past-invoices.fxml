@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="demo.prorotypeinvocemaker.PastInvoicesController"
+      spacing="15" style="-fx-padding: 20;">
+
+    <Label text="Past Invoices" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <!-- Filters Section -->
+    <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 10; -fx-background-color: #f5f5f5; -fx-background-radius: 5;">
+
+        <!-- Search Field -->
+        <VBox spacing="5">
+            <Label text="Search:" style="-fx-font-size: 11px;"/>
+            <TextField fx:id="searchField" promptText="Invoice ID or customer..." prefWidth="200"/>
+        </VBox>
+
+        <!-- Type Filter -->
+        <VBox spacing="5">
+            <Label text="Type:" style="-fx-font-size: 11px;"/>
+            <ChoiceBox fx:id="typeFilterBox" prefWidth="120"/>
+        </VBox>
+
+        <!-- Date Range -->
+        <VBox spacing="5">
+            <Label text="From Date:" style="-fx-font-size: 11px;"/>
+            <DatePicker fx:id="startDatePicker" prefWidth="140"/>
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="To Date:" style="-fx-font-size: 11px;"/>
+            <DatePicker fx:id="endDatePicker" prefWidth="140"/>
+        </VBox>
+
+        <!-- Buttons -->
+        <VBox spacing="5" alignment="BOTTOM_LEFT">
+            <Label text=" " style="-fx-font-size: 11px;"/> <!-- Spacer -->
+            <HBox spacing="10">
+                <Button text="Refresh" onAction="#handleRefresh"/>
+                <Button text="Clear Filters" onAction="#handleClearFilters"/>
+            </HBox>
+        </VBox>
+
+    </HBox>
+
+    <!-- Table of Invoices -->
+    <TableView fx:id="invoiceTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="invoiceIdCol" text="Invoice ID" prefWidth="150"/>
+            <TableColumn fx:id="typeCol" text="Type" prefWidth="80"/>
+            <TableColumn fx:id="customerCol" text="Customer" prefWidth="200"/>
+            <TableColumn fx:id="dateCol" text="Date" prefWidth="120"/>
+            <TableColumn fx:id="totalCol" text="Total" prefWidth="100"/>
+        </columns>
+    </TableView>
+
+    <!-- Action Buttons -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Open PDF" onAction="#handleOpenPdf" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        <Button text="Open Folder" onAction="#handleOpenFolder"/>
+    </HBox>
+
+</VBox>

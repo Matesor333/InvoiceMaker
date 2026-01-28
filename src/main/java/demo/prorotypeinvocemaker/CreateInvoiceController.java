@@ -198,7 +198,7 @@ public class CreateInvoiceController {
             // Show success message
             showSuccess("Invoice Generated",
                     "Invoice #" + invoiceId + " created successfully!\n\nSaved to:\n" + saveLocation);
-
+            RefreshManager.triggerRefresh();
             // Clear form
             clearForm();
 
