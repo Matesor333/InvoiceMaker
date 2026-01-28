@@ -1,5 +1,6 @@
 package demo.prorotypeinvocemaker;
 
+import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -8,12 +9,15 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
-
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class InvoicePdfGenerator {
 
@@ -30,85 +34,74 @@ public class InvoicePdfGenerator {
             List<InvoiceItem> items,
             LocalDate dueDate,
             String currency,
-            String outputPath) throws IOException {
+            String outputPath,
+            Locale locale) throws IOException { // <--- Added Locale parameter
 
-        // Create filename from invoice ID (remove special characters)
+        // Load translations
+        ResourceBundle messages = ResourceBundle.getBundle("demo.prorotypeinvocemaker.messages", locale);
+
         String filename = "invoice_" + invoiceId.replaceAll("[^a-zA-Z0-9]", "_") + ".pdf";
         String pdfPath = outputPath + "/" + filename;
 
-        // Step 1: Create PdfWriter to write to file
         PdfWriter writer = new PdfWriter(pdfPath);
-
-        // Step 2: Create PdfDocument
         PdfDocument pdfDoc = new PdfDocument(writer);
-
-        // Step 3: Create Document (high-level layout)
         Document document = new Document(pdfDoc);
 
-        // --- ADD CONTENT TO PDF ---
+        PdfFont font = PdfFontFactory.createFont(StandardFonts.HELVETICA, "Cp1250", PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
 
         // Title
-        document.add(new Paragraph("INVOICE")
+        document.add(new Paragraph(messages.getString("invoice.title"))
                 .setFontSize(24).setBold().setTextAlignment(TextAlignment.CENTER));
 
         document.add(new Paragraph("\n"));
 
         // Invoice Details
-        document.add(new Paragraph("Invoice ID: " + invoiceId).setBold());
-        document.add(new Paragraph("Invoice Date: " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
-        document.add(new Paragraph("Payment Due: " + dueDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+        document.add(new Paragraph("Invoice #: " + invoiceId).setBold());
+        document.add(new Paragraph(messages.getString("invoice.date") + " " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
+        document.add(new Paragraph(messages.getString("invoice.due") + " " + dueDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
 
         document.add(new Paragraph("\n"));
 
         // Customer Details
-        document.add(new Paragraph("BILL TO:").setBold().setFontSize(12));
+        document.add(new Paragraph(messages.getString("invoice.billto")).setBold().setFontSize(12));
         document.add(new Paragraph(customerName));
         document.add(new Paragraph(address));
         document.add(new Paragraph(city + ", " + postcode + ", " + country));
 
         if ("Company".equals(customerType)) {
             if (companyId != null && !companyId.isEmpty()) {
-                document.add(new Paragraph("Company ID: " + companyId));
+                document.add(new Paragraph(messages.getString("invoice.companyid") + " " + companyId));
             }
             if (vatNumber != null && !vatNumber.isEmpty()) {
-                document.add(new Paragraph("VAT Number: " + vatNumber));
+                document.add(new Paragraph(messages.getString("invoice.vat") + " " + vatNumber));
             }
         }
 
         document.add(new Paragraph("\n"));
 
-        // Items Table (2 columns: Service and Amount)
+        // Items Table
         Table table = new Table(2);
         table.setWidth(UnitValue.createPercentValue(100));
 
-        // Header Row
-        Cell header1 = new Cell().add(new Paragraph("Service Description").setBold());
-        Cell header2 = new Cell().add(new Paragraph("Amount").setBold());
+        Cell header1 = new Cell().add(new Paragraph(messages.getString("invoice.service")).setBold());
+        Cell header2 = new Cell().add(new Paragraph(messages.getString("invoice.amount")).setBold());
         header2.setTextAlignment(TextAlignment.RIGHT);
         table.addCell(header1);
         table.addCell(header2);
 
-        // Data Rows
         double total = 0;
         String currencySymbol = getCurrencySymbol(currency);
 
         for (InvoiceItem item : items) {
-            table.addCell(item.getDescription());
-
-            Cell amountCell = new Cell().add(
-                    new Paragraph(String.format("%s %.2f", currencySymbol, item.getAmount()))
-            );
+            table.addCell(new Paragraph(item.getDescription())); // Ensure font is applied
+            Cell amountCell = new Cell().add(new Paragraph(String.format("%s %.2f", currencySymbol, item.getAmount())));
             amountCell.setTextAlignment(TextAlignment.RIGHT);
             table.addCell(amountCell);
-
             total += item.getAmount();
         }
 
-        // Total Row
-        Cell totalLabel = new Cell().add(new Paragraph("TOTAL").setBold());
-        Cell totalAmount = new Cell().add(
-                new Paragraph(String.format("%s %.2f", currencySymbol, total)).setBold()
-        );
+        Cell totalLabel = new Cell().add(new Paragraph(messages.getString("invoice.total")).setBold());
+        Cell totalAmount = new Cell().add(new Paragraph(String.format("%s %.2f", currencySymbol, total)).setBold());
         totalAmount.setTextAlignment(TextAlignment.RIGHT);
 
         table.addCell(totalLabel);
@@ -116,17 +109,16 @@ public class InvoicePdfGenerator {
 
         document.add(table);
 
-        // Footer
-        document.add(new Paragraph("\n\nThank you for your business!")
+        document.add(new Paragraph("\n\n" + messages.getString("invoice.footer"))
                 .setTextAlignment(TextAlignment.CENTER));
 
-        // Step 4: Close the document (IMPORTANT!)
         document.close();
-
         System.out.println("✓ PDF generated: " + pdfPath);
     }
 
+
     private static String getCurrencySymbol(String currency) {
+
         if (currency == null) return "£";
         if (currency.contains("USD")) return "$";
         if (currency.contains("EUR")) return "€";

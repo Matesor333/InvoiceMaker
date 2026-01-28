@@ -1,0 +1,122 @@
+/* GLOBAL STYLES */
+.root {
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: #f4f6f8; /* Light gray background */
+}
+
+/* HEADERS */
+.header-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 0 0 15 0;
+}
+
+.subheader-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7f8c8d;
+}
+
+/* TABS */
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-background-color: transparent;
+    -fx-padding: 10 20;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab:selected {
+    -fx-border-color: #3498db; /* Active tab underline */
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #3498db;
+    -fx-font-weight: bold;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: #95a5a6;
+    -fx-font-size: 14px;
+}
+
+.tab-content-area {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-background-radius: 5;
+}
+
+/* INPUT FIELDS */
+.text-field, .date-picker .text-field, .choice-box {
+    -fx-background-color: white;
+    -fx-border-color: #dce4ec;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 8;
+}
+
+.text-field:focused, .date-picker:focused .text-field, .choice-box:focused {
+    -fx-border-color: #3498db;
+    -fx-background-color: white;
+}
+
+/* BUTTONS */
+.button {
+    -fx-background-color: #ecf0f1;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 8 16;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.button:hover {
+    -fx-background-color: #bdc3c7;
+}
+
+.primary-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+.primary-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.danger-button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+
+/* TABLES */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: #dce4ec;
+    -fx-border-radius: 4;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #ecf0f1;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #dce4ec;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f9fbfd;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #eaf2f8;
+    -fx-text-fill: black;
+}

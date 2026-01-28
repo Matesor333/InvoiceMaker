@@ -32,6 +32,7 @@ public class CreateInvoiceController {
     @FXML private TableView<InvoiceItem> itemsTable;
     @FXML private TableColumn<InvoiceItem, String> serviceCol;
     @FXML private TableColumn<InvoiceItem, Double> amountCol;
+    @FXML private ChoiceBox<String> languageBox;
 
     @FXML private TextField newServiceField;
     @FXML private TextField newAmountField;
@@ -72,6 +73,9 @@ public class CreateInvoiceController {
             updateIdPreview();
             updateFormFields(newVal);
         });
+        languageBox.setItems(FXCollections.observableArrayList("English", "Slovak"));
+        languageBox.setValue("English"); // Default
+
         // Initial preview
         updateIdPreview();
     }
@@ -147,6 +151,7 @@ public class CreateInvoiceController {
 
     @FXML
     private void handleGenerate() {
+        System.out.println("Generate Invoice with currency: " + currencyBox.getValue());
         // Validate customer fields
         if (nameField.getText().isEmpty() || addressField.getText().isEmpty()
                 || cityField.getText().isEmpty() || postcodeField.getText().isEmpty()) {
@@ -178,7 +183,12 @@ public class CreateInvoiceController {
             // Generate unique invoice ID
             String invoiceId = InvoiceIdGenerator.generateId(customerTypeBox.getValue());
 
-            // Call PDF generator
+            Locale locale = new Locale("en", "US");
+            if ("Slovak".equals(languageBox.getValue())) {
+                locale = new Locale("sk", "SK");
+            }
+
+            // Generate PDF with Locale
             InvoicePdfGenerator.generateInvoice(
                     invoiceId,
                     nameField.getText(),
@@ -192,7 +202,8 @@ public class CreateInvoiceController {
                     new java.util.ArrayList<>(invoiceItems),
                     dueDatePicker.getValue(),
                     currencyBox.getValue(),
-                    saveLocation
+                    saveLocation,
+                    locale // <--- Pass the locale here
             );
 
             // Show success message
