@@ -14,15 +14,17 @@ Dynamic File Management: Automatically updates the storage, ensuring your archiv
 
 User Profile: Saves your business information to auto-populate headers.
 
-Immdiate Roadmap
-On invoice right now there is sellrs inforamtion missing.
-New tab to mannge saved client inforamtion.
-Make it look less like it was build in early 2000.
+## Immdiate Roadmap
+
+-  On invoice right now there is sellrs inforamtion missing.
+-  New tab to mannge saved client inforamtion.
+-  Make it look less like it was build in early 2000.
 
 
-Future Roadmap
-Server Synchronization: Migration to a client-server architecture to allow access from multiple devices.
-Email processing: Automaticly sends invoice to the customer via email.
-APIs: creating api for website to customer invoice without any overhead.
-Auto reminder via email to pay thriught banks api.
-In app pdf preview and editting.
+## Future Roadmap
+
+-  Server Synchronization: Migration to a client-server architecture to allow access from multiple devices.
+-  Email processing: Automaticly sends invoice to the customer via email.
+-  APIs: creating api for website to customer invoice without any overhead.
+-  Auto reminder via email to pay thriught banks api.
+-  In app pdf preview and editting.
