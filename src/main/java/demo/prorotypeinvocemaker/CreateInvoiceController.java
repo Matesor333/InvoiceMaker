@@ -147,20 +147,93 @@ public class CreateInvoiceController {
 
     @FXML
     private void handleGenerate() {
-        try {
-            System.out.println("Generating invoice for: " + nameField.getText());
-            System.out.println("Address: " + addressField.getText());
-            System.out.println("Location: " + cityField.getText() + ", " + countryField.getText() + " " + postcodeField.getText());
-            System.out.println("Total: " + totalAmountLabel.getText());
-            System.out.println("Due: " + dueDatePicker.getValue());
+        // Validate customer fields
+        if (nameField.getText().isEmpty() || addressField.getText().isEmpty()
+                || cityField.getText().isEmpty() || postcodeField.getText().isEmpty()) {
+            showError("Validation Error", "Please fill in all required customer fields.");
+            return;
+        }
 
-            String finalInvoiceId = InvoiceIdGenerator.generateId(customerTypeBox.getValue());
-            System.out.println("Generating Invoice #" + finalInvoiceId);
-            showSuccess("Invoice Generated", "Invoice " + finalInvoiceId + " created successfully!");
-        }catch (Exception e){
-            showError("Generation Failed", e.getMessage());
+        // Validate items
+        if (invoiceItems.isEmpty()) {
+            showError("Validation Error", "Please add at least one invoice item.");
+            return;
+        }
+
+        // Get save location from Company Details
+        String saveLocation = loadSaveLocation();
+        if (saveLocation == null || saveLocation.isEmpty()) {
+            showError("Configuration Error", "Please set an invoice save folder in Company Details.");
+            return;
+        }
+
+        // Check folder exists
+        java.io.File folder = new java.io.File(saveLocation);
+        if (!folder.exists()) {
+            showError("Folder Error", "Save folder does not exist: " + saveLocation);
+            return;
+        }
+
+        try {
+            // Generate unique invoice ID
+            String invoiceId = InvoiceIdGenerator.generateId(customerTypeBox.getValue());
+
+            // Call PDF generator
+            InvoicePdfGenerator.generateInvoice(
+                    invoiceId,
+                    nameField.getText(),
+                    addressField.getText(),
+                    cityField.getText(),
+                    postcodeField.getText(),
+                    countryField.getText(),
+                    idField.getText(),
+                    vatField.getText(),
+                    customerTypeBox.getValue(),
+                    new java.util.ArrayList<>(invoiceItems),
+                    dueDatePicker.getValue(),
+                    currencyBox.getValue(),
+                    saveLocation
+            );
+
+            // Show success message
+            showSuccess("Invoice Generated",
+                    "Invoice #" + invoiceId + " created successfully!\n\nSaved to:\n" + saveLocation);
+
+            // Clear form
+            clearForm();
+
+        } catch (Exception e) {
+            showError("PDF Generation Error", e.getMessage());
             e.printStackTrace();
         }
+    }
+    private void clearForm() {
+        nameField.clear();
+        addressField.clear();
+        cityField.clear();
+        postcodeField.clear();
+        countryField.clear();
+        idField.clear();
+        vatField.clear();
+        newServiceField.clear();
+        newAmountField.clear();
+        invoiceItems.clear();
+        totalAmountLabel.setText("0.00");
+        dueDatePicker.setValue(java.time.LocalDate.now().plusDays(14));
+    }
+    private String loadSaveLocation() {
+        java.util.Properties properties = new java.util.Properties();
+        java.io.File configFile = new java.io.File("company-details.properties");
+
+        if (configFile.exists()) {
+            try (java.io.FileInputStream in = new java.io.FileInputStream(configFile)) {
+                properties.load(in);
+                return properties.getProperty("saveLocation", "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
     private void showSuccess(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION); // <--- Key Change: INFORMATION
