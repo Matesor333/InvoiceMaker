@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="demo.prorotypeinvocemaker.CompanyDetailsController"
+      spacing="20" style="-fx-padding: 20;">
+
+    <Label text="Company Information" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="10" vgap="15">
+
+        <!-- Row 0 -->
+        <Label text="Company Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="companyNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                   prefWidth="300" promptText="Enter company name"/>
+
+        <!-- Row 1: NEW FIELD -->
+        <Label text="ID Num:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="companyIdField" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                   prefWidth="300" promptText="Company Registration ID"/>
+
+        <!-- Row 2 -->
+        <Label text="Address Line 1:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="addressLine1Field" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                   prefWidth="300" promptText="Street address"/>
+
+        <!-- Row 3 -->
+        <Label text="Address Line 2:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="addressLine2Field" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                   prefWidth="300" promptText="Apt, suite, etc. (optional)"/>
+
+        <!-- Row 4 -->
+        <Label text="City:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <TextField fx:id="cityField" GridPane.rowIndex="4" GridPane.columnIndex="1"
+                   prefWidth="300" promptText="City"/>
+
+        <!-- Row 5 -->
+        <Label text="Postcode:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <TextField fx:id="postcodeField" GridPane.rowIndex="5" GridPane.columnIndex="1"
+                   prefWidth="300" promptText="Postcode"/>
+
+        <!-- Row 6 -->
+        <Label text="Phone:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <TextField fx:id="phoneField" GridPane.rowIndex="6" GridPane.columnIndex="1"
+                   prefWidth="300" promptText="Contact phone"/>
+
+        <!-- Row 7 -->
+        <Label text="Email:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+        <TextField fx:id="emailField" GridPane.rowIndex="7" GridPane.columnIndex="1"
+                   prefWidth="300" promptText="contact@company.com"/>
+
+        <!-- Row 8 -->
+        <Label text="Tax/VAT Number:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+        <TextField fx:id="taxNumberField" GridPane.rowIndex="8" GridPane.columnIndex="1"
+                   prefWidth="300" promptText="Optional"/>
+        <!-- ... previous rows ... -->
+
+        <!-- Row 9: Invoice Save Location -->
+        <Label text="Invoice Save Folder:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
+        <HBox spacing="10" GridPane.rowIndex="9" GridPane.columnIndex="1">
+            <TextField fx:id="saveLocationField" editable="false" prefWidth="220" promptText="Select folder..."/>
+            <Button text="..." onAction="#handleBrowseLocation"/>
+        </HBox>
+
+
+
+    </GridPane>
+
+    <HBox spacing="10">
+        <Button text="Save" onAction="#handleSave" prefWidth="100"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button text="Reset" onAction="#handleReset" prefWidth="100"/>
+        <Label fx:id="statusLabel" style="-fx-text-fill: green;"/>
+    </HBox>
+
+</VBox>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="demo.prorotypeinvocemaker.InvoiceMakerController"
+            prefHeight="600.0" prefWidth="800.0">
+
+    <center>
+        <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab text="Company Details">
+                    <fx:include source="company-details.fxml"/>
+                </Tab>
+                <Tab text="Past Invoices">
+                    <Label text="Past Invoices - Coming Soon"/>
+                </Tab>
+                <Tab text="Create Invoice">
+                    <fx:include source="create-invoice.fxml"/>
+                </Tab>
+
+            </tabs>
+        </TabPane>
+    </center>
+
+</BorderPane>
