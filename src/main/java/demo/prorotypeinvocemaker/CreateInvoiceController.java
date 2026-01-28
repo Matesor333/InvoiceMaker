@@ -7,12 +7,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import java.time.LocalDate;
-
+import java.util.Currency;
+import java.util.Locale;
 public class CreateInvoiceController {
 
     @FXML private ChoiceBox<String> customerTypeBox;
     @FXML private GridPane customerDetailsPane;
-
+    @FXML private ChoiceBox<String> currencyBox;
     // Labels that change based on selection
     @FXML private Label nameLabel;
     @FXML private Label idLabel;
@@ -23,16 +24,10 @@ public class CreateInvoiceController {
     @FXML private TextField addressField;
     @FXML private TextField idField;
     @FXML private TextField vatField;
-
-
-
+    @FXML private Label invoiceIdLabel;
     @FXML private TextField cityField;
     @FXML private TextField postcodeField;
     @FXML private TextField countryField;
-
-
-
-
     // Table and Items
     @FXML private TableView<InvoiceItem> itemsTable;
     @FXML private TableColumn<InvoiceItem, String> serviceCol;
@@ -56,7 +51,14 @@ public class CreateInvoiceController {
         customerTypeBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             updateFormFields(newVal);
         });
+        // Setup Currency ChoiceBox
+        currencyBox.setItems(FXCollections.observableArrayList("USD ($)", "EUR (€)", "GBP (£)"));
+        currencyBox.setValue("GBP (£)"); // Default
 
+        // Listen for currency changes to update total label immediately
+        currencyBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            updateTotal();
+        });
         // Setup Table Columns
         serviceCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         amountCol.setCellValueFactory(new PropertyValueFactory<>("amount"));
@@ -65,6 +67,13 @@ public class CreateInvoiceController {
 
         // Default due date to 14 days from now
         dueDatePicker.setValue(LocalDate.now().plusDays(14));
+
+        customerTypeBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            updateIdPreview();
+            updateFormFields(newVal);
+        });
+        // Initial preview
+        updateIdPreview();
     }
 
     private void updateFormFields(String type) {
@@ -127,6 +136,15 @@ public class CreateInvoiceController {
         totalAmountLabel.setText(String.format("%.2f", total));
     }
 
+    private String getCurrencySymbol() {
+        String selected = currencyBox.getValue();
+        if (selected == null) return "£";
+
+        if (selected.contains("USD")) return "$";
+        if (selected.contains("EUR")) return "€";
+        return "£"; // Default to GBP
+    }
+
     @FXML
     private void handleGenerate() {
         System.out.println("Generating invoice for: " + nameField.getText());
@@ -134,6 +152,10 @@ public class CreateInvoiceController {
         System.out.println("Location: " + cityField.getText() + ", " + countryField.getText() + " " + postcodeField.getText());
         System.out.println("Total: " + totalAmountLabel.getText());
         System.out.println("Due: " + dueDatePicker.getValue());
+
+        String finalInvoiceId = InvoiceIdGenerator.generateId(customerTypeBox.getValue());
+        System.out.println("Generating Invoice #" + finalInvoiceId);
+        showAlert("Success", "Invoice " + finalInvoiceId + " generated!");
     }
 
 
@@ -143,4 +165,13 @@ public class CreateInvoiceController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+    private void updateIdPreview() {
+        // Just a preview, not the final frozen ID
+        String type = customerTypeBox.getValue();
+        String previewId = "Company".equals(type) ? "PO-YYYYMMDD..." : "FO-YYYYMMDD...";
+        invoiceIdLabel.setText(previewId);
+    }
+
+
 }

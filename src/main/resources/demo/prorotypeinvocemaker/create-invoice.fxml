@@ -9,12 +9,26 @@
       fx:controller="demo.prorotypeinvocemaker.CreateInvoiceController"
       spacing="15" style="-fx-padding: 20;">
 
+    <!-- ... previous code ... -->
     <Label text="New Invoice" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
-    <!-- Customer Selection -->
-    <HBox spacing="15" alignment="CENTER_LEFT">
-        <Label text="Customer Type:"/>
-        <ChoiceBox fx:id="customerTypeBox" prefWidth="150"/>
+    <!-- Top Row: Customer Type AND Currency -->
+    <HBox spacing="20" alignment="CENTER_LEFT">
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Customer Type:"/>
+            <ChoiceBox fx:id="customerTypeBox" prefWidth="150"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label text="Currency:"/>
+            <ChoiceBox fx:id="currencyBox" prefWidth="100"/>
+        </HBox>
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <Region HBox.hgrow="ALWAYS" />
+            <VBox alignment="CENTER_RIGHT">
+                <Label text="Invoice ID (Preview):" style="-fx-font-size: 10px;"/>
+                <Label fx:id="invoiceIdLabel" text="---" style="-fx-font-weight: bold;"/>
+            </VBox>
+        </HBox>
     </HBox>
 
     <!-- Customer Details Form -->
@@ -28,7 +42,7 @@
         <Label text="Address:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
         <TextField fx:id="addressField" GridPane.rowIndex="1" GridPane.columnIndex="1" prefWidth="300"/>
 
-        <!-- Row 2: City / Postcode / Country (NEW) -->
+        <!-- Row 2: City / Postcode / Country -->
         <Label text="City / Postcode / Country:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
         <HBox spacing="10" GridPane.rowIndex="2" GridPane.columnIndex="1">
             <TextField fx:id="cityField" promptText="City" prefWidth="110"/>
@@ -48,7 +62,7 @@
 
     <Separator/>
 
-    <!-- Items Table (Unchanged) -->
+
     <Label text="Invoice Items" style="-fx-font-weight: bold;"/>
     <TableView fx:id="itemsTable" prefHeight="200">
         <columns>
@@ -57,7 +71,7 @@
         </columns>
     </TableView>
 
-    <!-- Add Item (Unchanged) -->
+
     <HBox spacing="10" alignment="CENTER_LEFT">
         <TextField fx:id="newServiceField" promptText="Service Description" prefWidth="300"/>
         <TextField fx:id="newAmountField" promptText="Amount (0.00)" prefWidth="100"/>
@@ -66,7 +80,7 @@
 
     <Separator/>
 
-    <!-- Totals (Unchanged) -->
+
     <GridPane hgap="10" vgap="10" alignment="CENTER_RIGHT">
         <Label text="Total Amount:" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <Label fx:id="totalAmountLabel" text="0.00" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
