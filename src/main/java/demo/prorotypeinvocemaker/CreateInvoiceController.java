@@ -113,7 +113,7 @@ public class CreateInvoiceController {
         String amountText = newAmountField.getText();
 
         if (desc.isEmpty() || amountText.isEmpty()) {
-            showAlert("Error", "Please enter both service and amount.");
+            showSuccess( "Error", "Please enter both service and amount.");
             return;
         }
 
@@ -127,7 +127,7 @@ public class CreateInvoiceController {
             updateTotal();
 
         } catch (NumberFormatException e) {
-            showAlert("Invalid Amount", "Please enter a valid number for amount.");
+            showSuccess("Invalid Amount", "Please enter a valid number for amount.");
         }
     }
 
@@ -147,24 +147,38 @@ public class CreateInvoiceController {
 
     @FXML
     private void handleGenerate() {
-        System.out.println("Generating invoice for: " + nameField.getText());
-        System.out.println("Address: " + addressField.getText());
-        System.out.println("Location: " + cityField.getText() + ", " + countryField.getText() + " " + postcodeField.getText());
-        System.out.println("Total: " + totalAmountLabel.getText());
-        System.out.println("Due: " + dueDatePicker.getValue());
+        try {
+            System.out.println("Generating invoice for: " + nameField.getText());
+            System.out.println("Address: " + addressField.getText());
+            System.out.println("Location: " + cityField.getText() + ", " + countryField.getText() + " " + postcodeField.getText());
+            System.out.println("Total: " + totalAmountLabel.getText());
+            System.out.println("Due: " + dueDatePicker.getValue());
 
-        String finalInvoiceId = InvoiceIdGenerator.generateId(customerTypeBox.getValue());
-        System.out.println("Generating Invoice #" + finalInvoiceId);
-        showAlert("Success", "Invoice " + finalInvoiceId + " generated!");
+            String finalInvoiceId = InvoiceIdGenerator.generateId(customerTypeBox.getValue());
+            System.out.println("Generating Invoice #" + finalInvoiceId);
+            showSuccess("Invoice Generated", "Invoice " + finalInvoiceId + " created successfully!");
+        }catch (Exception e){
+            showError("Generation Failed", e.getMessage());
+            e.printStackTrace();
+        }
     }
-
-
-    private void showAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+    private void showSuccess(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION); // <--- Key Change: INFORMATION
         alert.setTitle(title);
+        alert.setHeaderText(null); // Removes the big header text to make it cleaner
         alert.setContentText(content);
         alert.showAndWait();
     }
+    private void showError(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR); // <--- Key Change: ERROR
+        alert.setTitle(title);
+        alert.setHeaderText("Error");
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+
+
 
     private void updateIdPreview() {
         // Just a preview, not the final frozen ID
