@@ -6,7 +6,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="demo.prorotypeinvocemaker.PastInvoicesController"
+      fx:controller="demo.prorotypeinvocemaker.Controllers.PastInvoicesController"
       styleClass="tab-content-area" spacing="15">
 
     <Label text="Past Invoices" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>

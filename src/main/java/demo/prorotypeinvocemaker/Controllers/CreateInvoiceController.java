@@ -1,5 +1,9 @@
-package demo.prorotypeinvocemaker;
+package demo.prorotypeinvocemaker.Controllers;
 
+import demo.prorotypeinvocemaker.helperClass.InvoiceIdGenerator;
+import demo.prorotypeinvocemaker.helperClass.InvoiceItem;
+import demo.prorotypeinvocemaker.helperClass.InvoicePdfGenerator;
+import demo.prorotypeinvocemaker.managers.RefreshManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -7,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import java.time.LocalDate;
-import java.util.Currency;
 import java.util.Locale;
 public class CreateInvoiceController {
 
@@ -209,7 +212,7 @@ public class CreateInvoiceController {
             // Show success message
             showSuccess("Invoice Generated",
                     "Invoice #" + invoiceId + " created successfully!\n\nSaved to:\n" + saveLocation);
-            RefreshManager.triggerRefresh();
+
             // Clear form
             clearForm();
 

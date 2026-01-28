@@ -5,7 +5,7 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="demo.prorotypeinvocemaker.CompanyDetailsController"
+      fx:controller="demo.prorotypeinvocemaker.Controllers.CompanyDetailsController"
       styleClass="tab-content-area" spacing="15">
 
     <Label text="Company Information" styleClass="header-label"/>

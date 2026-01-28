@@ -1,5 +1,8 @@
-package demo.prorotypeinvocemaker;
+package demo.prorotypeinvocemaker.Controllers;
 
+import demo.prorotypeinvocemaker.helperClass.InvoiceRecord;
+import demo.prorotypeinvocemaker.managers.FolderWatcher;
+import demo.prorotypeinvocemaker.managers.RefreshManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -33,7 +36,7 @@ public class PastInvoicesController {
 
     private ObservableList<InvoiceRecord> allInvoices = FXCollections.observableArrayList();
     private FilteredList<InvoiceRecord> filteredInvoices;
-
+    private final FolderWatcher folderWatcher = new FolderWatcher(); // <--- NEW INSTANCE
     @FXML
     public void initialize() {
         // Setup table columns
@@ -56,11 +59,19 @@ public class PastInvoicesController {
         typeFilterBox.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
         startDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
         endDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
-        RefreshManager.setRefreshTask(this::loadInvoices);
+
         // Load invoices
         loadInvoices();
+
+        String saveLocation = loadSaveLocation();
+        if (saveLocation != null && !saveLocation.isEmpty()) {
+            folderWatcher.start(saveLocation, this::loadInvoices);
+        }
     }
 
+    public void stopWatcher() {
+        folderWatcher.stop();
+    }
     private void loadInvoices() {
         allInvoices.clear();
 

@@ -1,4 +1,4 @@
-package demo.prorotypeinvocemaker;
+package demo.prorotypeinvocemaker.managers;
 
 public class RefreshManager {
     // A single runnable task that any controller can set or call

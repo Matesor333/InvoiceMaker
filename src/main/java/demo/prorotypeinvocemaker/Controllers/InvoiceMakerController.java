@@ -1,4 +1,4 @@
-package demo.prorotypeinvocemaker;
+package demo.prorotypeinvocemaker.Controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;

@@ -1,4 +1,4 @@
-package demo.prorotypeinvocemaker;
+package demo.prorotypeinvocemaker.helperClass;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

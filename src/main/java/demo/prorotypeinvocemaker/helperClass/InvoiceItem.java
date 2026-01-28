@@ -1,4 +1,4 @@
-package demo.prorotypeinvocemaker;
+package demo.prorotypeinvocemaker.helperClass;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
