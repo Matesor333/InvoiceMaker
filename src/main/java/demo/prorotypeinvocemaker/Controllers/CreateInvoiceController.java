@@ -1,9 +1,10 @@
 package demo.prorotypeinvocemaker.Controllers;
 
+import demo.prorotypeinvocemaker.helperClass.CustomerManager;
 import demo.prorotypeinvocemaker.helperClass.InvoiceIdGenerator;
-import demo.prorotypeinvocemaker.helperClass.InvoiceItem;
+import demo.prorotypeinvocemaker.models.Customer;
+import demo.prorotypeinvocemaker.models.InvoiceItem;
 import demo.prorotypeinvocemaker.helperClass.InvoicePdfGenerator;
-import demo.prorotypeinvocemaker.managers.RefreshManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Locale;
 public class CreateInvoiceController {
 
@@ -23,7 +25,7 @@ public class CreateInvoiceController {
     @FXML private Label vatLabel;
 
     // Fields
-    @FXML private TextField nameField;
+
     @FXML private TextField addressField;
     @FXML private TextField idField;
     @FXML private TextField vatField;
@@ -42,9 +44,10 @@ public class CreateInvoiceController {
 
     @FXML private Label totalAmountLabel;
     @FXML private DatePicker dueDatePicker;
+    @FXML private ComboBox<Customer> customerSearchBox;
 
     private final ObservableList<InvoiceItem> invoiceItems = FXCollections.observableArrayList();
-
+    private final CustomerManager customerManager = new CustomerManager();
     @FXML
     public void initialize() {
         // Setup Customer Type ChoiceBox
@@ -54,7 +57,19 @@ public class CreateInvoiceController {
         // Listen for changes
         customerTypeBox.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             updateFormFields(newVal);
+            loadCustomerList(newVal);
         });
+
+        loadCustomerList(customerTypeBox.getValue());
+
+        // Handle selection event (User clicks a name from dropdown)
+        customerSearchBox.setOnAction(event -> {
+            Customer selected = customerSearchBox.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                fillCustomerDetails(selected);
+            }
+        });
+
         // Setup Currency ChoiceBox
         currencyBox.setItems(FXCollections.observableArrayList("USD ($)", "EUR (€)", "GBP (£)"));
         currencyBox.setValue("GBP (£)"); // Default
@@ -87,7 +102,7 @@ public class CreateInvoiceController {
         if ("Person".equals(type)) {
             // PERSON VIEW
             nameLabel.setText("Full Name:");
-            nameField.setPromptText("John Doe");
+            customerSearchBox.setPromptText("John Doe");
 
             // Hide ID field completely
             idLabel.setVisible(false);
@@ -100,7 +115,7 @@ public class CreateInvoiceController {
         } else {
             // COMPANY VIEW
             nameLabel.setText("Company Name:");
-            nameField.setPromptText("Acme Corp");
+            customerSearchBox.setPromptText("Acme Corp");
 
             // Show ID field
             idLabel.setVisible(true);
@@ -113,6 +128,20 @@ public class CreateInvoiceController {
         }
     }
 
+    private void loadCustomerList(String type) {
+        List<Customer> matching = customerManager.getCustomersByType(type);
+        customerSearchBox.setItems(FXCollections.observableArrayList(matching));
+    }
+
+    private void fillCustomerDetails(Customer c) {
+        addressField.setText(c.getAddress());
+        cityField.setText(c.getCity());
+        postcodeField.setText(c.getPostcode());
+        countryField.setText(c.getCountry());
+
+        if (idField != null) idField.setText(c.getId());
+        if (vatField != null) vatField.setText(c.getVat());
+    }
 
     @FXML
     private void handleAddItem() {
@@ -156,11 +185,35 @@ public class CreateInvoiceController {
     private void handleGenerate() {
         System.out.println("Generate Invoice with currency: " + currencyBox.getValue());
         // Validate customer fields
-        if (nameField.getText().isEmpty() || addressField.getText().isEmpty()
-                || cityField.getText().isEmpty() || postcodeField.getText().isEmpty()) {
-            showError("Validation Error", "Please fill in all required customer fields.");
+        String customerName = "";
+        Object value = customerSearchBox.getValue();
+
+        if (value instanceof Customer) {
+            customerName = ((Customer) value).getName();
+        } else if (value instanceof String) {
+            customerName = (String) value;
+        }
+
+        if (customerName == null || customerName.trim().isEmpty()) {
+            showError("Validation Error", "Please enter a name.");
             return;
         }
+
+        Customer currentCustomer = new Customer(
+                customerName,
+                addressField.getText(),
+                cityField.getText(),
+                postcodeField.getText(),
+                countryField.getText(),
+                idField.getText(),
+                vatField.getText(),
+                customerTypeBox.getValue()
+        );
+        customerManager.addOrUpdateCustomer(currentCustomer);
+
+        // Reload list to include the new one immediately
+        loadCustomerList(customerTypeBox.getValue());
+
 
         // Validate items
         if (invoiceItems.isEmpty()) {
@@ -194,7 +247,7 @@ public class CreateInvoiceController {
             // Generate PDF with Locale
             InvoicePdfGenerator.generateInvoice(
                     invoiceId,
-                    nameField.getText(),
+                    customerName,
                     addressField.getText(),
                     cityField.getText(),
                     postcodeField.getText(),
@@ -222,7 +275,8 @@ public class CreateInvoiceController {
         }
     }
     private void clearForm() {
-        nameField.clear();
+        customerSearchBox.setValue(null);
+        ;
         addressField.clear();
         cityField.clear();
         postcodeField.clear();

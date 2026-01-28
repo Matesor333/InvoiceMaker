@@ -11,6 +11,7 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
+import demo.prorotypeinvocemaker.models.InvoiceItem;
 
 import java.io.IOException;
 import java.time.LocalDate;

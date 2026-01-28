@@ -16,4 +16,6 @@ module demo.prorotypeinvocemaker {
     opens demo.prorotypeinvocemaker.managers to javafx.fxml;
     exports demo.prorotypeinvocemaker.helperClass;
     opens demo.prorotypeinvocemaker.helperClass to javafx.fxml;
+    exports demo.prorotypeinvocemaker.models;
+    opens demo.prorotypeinvocemaker.models to javafx.fxml;
 }
