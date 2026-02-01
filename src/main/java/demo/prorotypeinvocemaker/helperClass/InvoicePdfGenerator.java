@@ -36,7 +36,8 @@ public class InvoicePdfGenerator {
             LocalDate dueDate,
             String currency,
             String outputPath,
-            Locale locale) throws IOException { // <--- Added Locale parameter
+            Locale locale,
+            java.util.Properties companyDetails) throws IOException { // <--- Added companyDetails parameter
 
         // Load translations
         ResourceBundle messages = ResourceBundle.getBundle("demo.prorotypeinvocemaker.messages", locale);
@@ -49,6 +50,7 @@ public class InvoicePdfGenerator {
         Document document = new Document(pdfDoc);
 
         PdfFont font = PdfFontFactory.createFont(StandardFonts.HELVETICA, "Cp1250", PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+        document.setFont(font);
 
         // Title
         document.add(new Paragraph(messages.getString("invoice.title"))
@@ -56,10 +58,34 @@ public class InvoicePdfGenerator {
 
         document.add(new Paragraph("\n"));
 
+        // Main content table: Company Details (Left) and Invoice Details (Right)
+        Table headerTable = new Table(UnitValue.createPercentArray(new float[]{50, 50}));
+        headerTable.setWidth(UnitValue.createPercentValue(100));
+
+        // Company Details (Ours)
+        Cell companyCell = new Cell().setBorder(com.itextpdf.layout.borders.Border.NO_BORDER);
+        companyCell.add(new Paragraph(messages.getString("invoice.company.details")).setBold().setFontSize(12));
+        companyCell.add(new Paragraph(companyDetails.getProperty("companyName", "")));
+        companyCell.add(new Paragraph(companyDetails.getProperty("addressLine1", "")));
+        String address2 = companyDetails.getProperty("addressLine2", "");
+        if (address2 != null && !address2.isEmpty()) {
+            companyCell.add(new Paragraph(address2));
+        }
+        companyCell.add(new Paragraph(companyDetails.getProperty("city", "") + ", " + companyDetails.getProperty("postcode", "")));
+        companyCell.add(new Paragraph(messages.getString("invoice.companyid") + " " + companyDetails.getProperty("companyId", "")));
+        companyCell.add(new Paragraph(messages.getString("invoice.vat") + " " + companyDetails.getProperty("taxNumber", "")));
+        headerTable.addCell(companyCell);
+
         // Invoice Details
-        document.add(new Paragraph("Invoice #: " + invoiceId).setBold());
-        document.add(new Paragraph(messages.getString("invoice.date") + " " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
-        document.add(new Paragraph(messages.getString("invoice.due") + " " + dueDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
+        Cell invoiceDetailsCell = new Cell().setBorder(com.itextpdf.layout.borders.Border.NO_BORDER);
+        invoiceDetailsCell.setTextAlignment(TextAlignment.RIGHT);
+        invoiceDetailsCell.add(new Paragraph("Invoice #: " + invoiceId).setBold());
+        invoiceDetailsCell.add(new Paragraph(messages.getString("invoice.date") + " " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
+        invoiceDetailsCell.add(new Paragraph(messages.getString("invoice.due") + " " + dueDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
+        headerTable.addCell(invoiceDetailsCell);
+
+        document.add(headerTable);
+        document.add(new Paragraph("\n"));
 
         // Customer Details
         document.add(new Paragraph(messages.getString("invoice.billto")).setBold().setFontSize(12));
@@ -107,6 +133,15 @@ public class InvoicePdfGenerator {
         table.addCell(totalAmount);
 
         document.add(table);
+
+        document.add(new Paragraph("\n"));
+
+        // Bank Details
+        document.add(new Paragraph(messages.getString("invoice.bank.title")).setBold().setFontSize(12));
+        document.add(new Paragraph(messages.getString("invoice.bank.name") + " " + companyDetails.getProperty("bankName", "")));
+        document.add(new Paragraph(messages.getString("invoice.bank.account") + " " + companyDetails.getProperty("accountName", "")));
+        document.add(new Paragraph(messages.getString("invoice.bank.iban") + " " + companyDetails.getProperty("iban", "")));
+        document.add(new Paragraph(messages.getString("invoice.bank.swift") + " " + companyDetails.getProperty("swift", "")));
 
         document.add(new Paragraph("\n\n" + messages.getString("invoice.footer"))
                 .setTextAlignment(TextAlignment.CENTER));

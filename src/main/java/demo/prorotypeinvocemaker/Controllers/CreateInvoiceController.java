@@ -259,7 +259,8 @@ public class CreateInvoiceController {
                     dueDatePicker.getValue(),
                     currencyBox.getValue(),
                     saveLocation,
-                    locale // <--- Pass the locale here
+                    locale, // <--- Pass the locale here
+                    loadCompanyProperties() // <--- Pass company properties
             );
 
             // Show success message
@@ -290,18 +291,22 @@ public class CreateInvoiceController {
         dueDatePicker.setValue(java.time.LocalDate.now().plusDays(14));
     }
     private String loadSaveLocation() {
+        java.util.Properties properties = loadCompanyProperties();
+        return properties.getProperty("saveLocation", "");
+    }
+
+    private java.util.Properties loadCompanyProperties() {
         java.util.Properties properties = new java.util.Properties();
         java.io.File configFile = new java.io.File("company-details.properties");
 
         if (configFile.exists()) {
             try (java.io.FileInputStream in = new java.io.FileInputStream(configFile)) {
                 properties.load(in);
-                return properties.getProperty("saveLocation", "");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return properties;
     }
     private void showSuccess(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
