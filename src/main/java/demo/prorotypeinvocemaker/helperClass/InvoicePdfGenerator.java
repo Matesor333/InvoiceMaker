@@ -61,8 +61,6 @@ public class InvoicePdfGenerator {
         document.add(new Paragraph(messages.getString("invoice.date") + " " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
         document.add(new Paragraph(messages.getString("invoice.due") + " " + dueDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
 
-        document.add(new Paragraph("\n"));
-
         // Customer Details
         document.add(new Paragraph(messages.getString("invoice.billto")).setBold().setFontSize(12));
         document.add(new Paragraph(customerName));

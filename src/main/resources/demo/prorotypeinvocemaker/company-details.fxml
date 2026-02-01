@@ -2,77 +2,113 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="demo.prorotypeinvocemaker.Controllers.CompanyDetailsController"
-      styleClass="tab-content-area" spacing="15">
+      spacing="20" styleClass="tab-content-area">
 
     <Label text="Company Information" styleClass="header-label"/>
 
-    <GridPane hgap="10" vgap="15">
+    <!-- Main Content Split -->
+    <HBox spacing="20" VBox.vgrow="ALWAYS">
 
-        <!-- Row 0 -->
-        <Label text="Company Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="companyNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"
-                   prefWidth="300" promptText="Enter company name"/>
+        <!-- LEFT COLUMN: Contact Details -->
+        <VBox spacing="15" HBox.hgrow="ALWAYS">
+            <Label text="Contact Details" styleClass="subheader-label"/>
 
-        <!-- Row 1: NEW FIELD -->
-        <Label text="ID Num:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="companyIdField" GridPane.rowIndex="1" GridPane.columnIndex="1"
-                   prefWidth="300" promptText="Company Registration ID"/>
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="100"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
 
-        <!-- Row 2 -->
-        <Label text="Address Line 1:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="addressLine1Field" GridPane.rowIndex="2" GridPane.columnIndex="1"
-                   prefWidth="300" promptText="Street address"/>
+                <!-- Row 0 -->
+                <Label text="Company Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="companyNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-        <!-- Row 3 -->
-        <Label text="Address Line 2:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <TextField fx:id="addressLine2Field" GridPane.rowIndex="3" GridPane.columnIndex="1"
-                   prefWidth="300" promptText="Apt, suite, etc. (optional)"/>
+                <!-- Row 1 -->
+                <Label text="ID Num:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="companyIdField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-        <!-- Row 4 -->
-        <Label text="City:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <TextField fx:id="cityField" GridPane.rowIndex="4" GridPane.columnIndex="1"
-                   prefWidth="300" promptText="City"/>
+                <!-- Row 2 -->
+                <Label text="Address Line 1:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="addressLine1Field" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-        <!-- Row 5 -->
-        <Label text="Postcode:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-        <TextField fx:id="postcodeField" GridPane.rowIndex="5" GridPane.columnIndex="1"
-                   prefWidth="300" promptText="Postcode"/>
+                <!-- Row 3 -->
+                <Label text="Address Line 2:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="addressLine2Field" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-        <!-- Row 6 -->
-        <Label text="Phone:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-        <TextField fx:id="phoneField" GridPane.rowIndex="6" GridPane.columnIndex="1"
-                   prefWidth="300" promptText="Contact phone"/>
+                <!-- Row 4 -->
+                <Label text="City:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <TextField fx:id="cityField" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-        <!-- Row 7 -->
-        <Label text="Email:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-        <TextField fx:id="emailField" GridPane.rowIndex="7" GridPane.columnIndex="1"
-                   prefWidth="300" promptText="contact@company.com"/>
+                <!-- Row 5 -->
+                <Label text="Postcode:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <TextField fx:id="postcodeField" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
-        <!-- Row 8 -->
-        <Label text="Tax/VAT Number:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
-        <TextField fx:id="taxNumberField" GridPane.rowIndex="8" GridPane.columnIndex="1"
-                   prefWidth="300" promptText="Optional"/>
+                <!-- Row 6 -->
+                <Label text="Phone:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+                <TextField fx:id="phoneField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
 
+                <!-- Row 7 -->
+                <Label text="Email:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+                <TextField fx:id="emailField" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
 
-        <!-- Row 9: Invoice Save Location -->
-        <Label text="Invoice Save Folder:" GridPane.rowIndex="9" GridPane.columnIndex="0"/>
-        <HBox spacing="10" GridPane.rowIndex="9" GridPane.columnIndex="1">
-            <TextField fx:id="saveLocationField" editable="false" prefWidth="220" promptText="Select folder..."/>
-            <Button text="..." onAction="#handleBrowseLocation"/>
-        </HBox>
+                <!-- Row 8 -->
+                <Label text="Tax/VAT:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+                <TextField fx:id="taxNumberField" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+            </GridPane>
+        </VBox>
 
+        <!-- VERTICAL SEPARATOR -->
+        <Separator orientation="VERTICAL"/>
 
+        <!-- RIGHT COLUMN: Bank & Config -->
+        <VBox spacing="15" HBox.hgrow="ALWAYS">
+            <Label text="Bank Details" styleClass="subheader-label"/>
 
-    </GridPane>
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="100"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
 
-    <HBox spacing="10">
-        <Button text="Save" onAction="#handleSave" styleClass="primary-button, button"/>
-        <Button text="Reset" onAction="#handleReset" prefWidth="100"/>
+                <Label text="Bank Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="bankNameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Account Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="accountNameField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="IBAN:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="ibanField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="SWIFT/BIC:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="swiftField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <Separator/>
+
+            <Label text="Configuration" styleClass="subheader-label"/>
+
+            <GridPane hgap="10" vgap="10">
+                <Label text="Save Folder:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <HBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                    <TextField fx:id="saveLocationField" editable="false" HBox.hgrow="ALWAYS"/>
+                    <Button text="..." onAction="#handleBrowseLocation"/>
+                </HBox>
+            </GridPane>
+
+        </VBox>
+    </HBox>
+
+    <Separator/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
         <Label fx:id="statusLabel" style="-fx-text-fill: green;"/>
+        <Button text="Reset" onAction="#handleReset" styleClass="button"/>
+        <Button text="Save Company Details" onAction="#handleSave" styleClass="primary-button"/>
     </HBox>
 
 </VBox>

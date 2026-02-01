@@ -25,7 +25,11 @@ public class CompanyDetailsController {
     @FXML private TextField taxNumberField;
     @FXML private Label statusLabel;
     @FXML private TextField saveLocationField;
-
+    //NEW BANK FIELDS
+    @FXML private TextField bankNameField;
+    @FXML private TextField accountNameField;
+    @FXML private TextField ibanField;
+    @FXML private TextField swiftField;
 
     private static final String CONFIG_FILE = "company-details.properties";
 
@@ -47,9 +51,12 @@ public class CompanyDetailsController {
         properties.setProperty("phone", phoneField.getText());
         properties.setProperty("email", emailField.getText());
         properties.setProperty("taxNumber", taxNumberField.getText());
-
+        //BANK SAVE DETAILS
         properties.setProperty("saveLocation", saveLocationField.getText());
-
+        properties.setProperty("bankName", bankNameField.getText());
+        properties.setProperty("accountName", accountNameField.getText());
+        properties.setProperty("iban", ibanField.getText());
+        properties.setProperty("swift", swiftField.getText());
 
         try (FileOutputStream out = new FileOutputStream(CONFIG_FILE)) {
             properties.store(out, "Company Details");
@@ -88,6 +95,12 @@ public class CompanyDetailsController {
                 phoneField.setText(properties.getProperty("phone", ""));
                 emailField.setText(properties.getProperty("email", ""));
                 taxNumberField.setText(properties.getProperty("taxNumber", ""));
+
+                // Load New Bank Details
+                bankNameField.setText(properties.getProperty("bankName", ""));
+                accountNameField.setText(properties.getProperty("accountName", ""));
+                ibanField.setText(properties.getProperty("iban", ""));
+                swiftField.setText(properties.getProperty("swift", ""));
             } catch (IOException e) {
                 e.printStackTrace();
             }
