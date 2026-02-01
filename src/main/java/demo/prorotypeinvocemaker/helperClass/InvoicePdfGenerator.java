@@ -1,18 +1,18 @@
 package demo.prorotypeinvocemaker.helperClass;
 
-import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
 import demo.prorotypeinvocemaker.models.InvoiceItem;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -49,7 +49,19 @@ public class InvoicePdfGenerator {
         PdfDocument pdfDoc = new PdfDocument(writer);
         Document document = new Document(pdfDoc);
 
-        PdfFont font = PdfFontFactory.createFont(StandardFonts.HELVETICA, "Cp1250", PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+        PdfFont font;
+        try {
+            // Try to use Arial from Windows Fonts as it supports Slovak characters and Cp1250 encoding
+            String fontPath = "C:\\Windows\\Fonts\\arial.ttf";
+            if (new File(fontPath).exists()) {
+                font = PdfFontFactory.createFont(fontPath, "Cp1250", PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+            } else {
+                // Fallback to Helvetica if Arial is not found (though it might have issues with some characters)
+                font = PdfFontFactory.createFont(com.itextpdf.io.font.constants.StandardFonts.HELVETICA, "Cp1250", PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+            }
+        } catch (Exception e) {
+            font = PdfFontFactory.createFont(com.itextpdf.io.font.constants.StandardFonts.HELVETICA, "Cp1250", PdfFontFactory.EmbeddingStrategy.PREFER_EMBEDDED);
+        }
         document.setFont(font);
 
         // Title
