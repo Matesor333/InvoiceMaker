@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="demo.prorotypeinvocemaker.Controllers.ClientDetailController"
+      spacing="20">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Left Side: Client Info -->
+    <VBox spacing="10" prefWidth="300" styleClass="tab-content-area">
+        <Label text="Client Information" styleClass="header-label"/>
+        <GridPane hgap="10" vgap="10">
+            <Label text="Name:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="subheader-label"/>
+            <Label fx:id="nameLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <Label text="Type:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="subheader-label"/>
+            <Label fx:id="typeLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <Label text="Address:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="subheader-label"/>
+            <Label fx:id="addressLabel" GridPane.rowIndex="2" GridPane.columnIndex="1" wrapText="true"/>
+
+            <Label text="City:" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="subheader-label"/>
+            <Label fx:id="cityLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <Label text="Postcode:" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="subheader-label"/>
+            <Label fx:id="postcodeLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+            <Label text="Country:" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="subheader-label"/>
+            <Label fx:id="countryLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <Label text="ID/IČO:" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="subheader-label"/>
+            <Label fx:id="idLabel" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+            <Label text="VAT/DIČ:" GridPane.rowIndex="7" GridPane.columnIndex="0" styleClass="subheader-label"/>
+            <Label fx:id="vatLabel" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+            <Label text="Note:" GridPane.rowIndex="8" GridPane.columnIndex="0" styleClass="subheader-label"/>
+            <Label fx:id="noteLabel" GridPane.rowIndex="8" GridPane.columnIndex="1" wrapText="true"/>
+        </GridPane>
+        <Region VBox.vgrow="ALWAYS"/>
+        <Button text="Edit Client" onAction="#handleEditClient" maxWidth="Infinity" styleClass="primary-button"/>
+    </VBox>
+
+    <!-- Right Side: Invoices and Services -->
+    <VBox spacing="20" HBox.hgrow="ALWAYS">
+        <!-- Top: Past Invoices -->
+        <VBox spacing="5" VBox.vgrow="ALWAYS">
+            <Label text="Past Invoices" styleClass="header-label"/>
+            <TableView fx:id="invoicesTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="invoiceIdColumn" text="Invoice #" prefWidth="150"/>
+                    <TableColumn fx:id="dateColumn" text="Date" prefWidth="100"/>
+                    <TableColumn fx:id="totalColumn" text="Total" prefWidth="100"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+        <!-- Bottom: Services Provided -->
+        <VBox spacing="5" VBox.vgrow="ALWAYS">
+            <Label text="Services Provided" styleClass="header-label"/>
+            <TableView fx:id="servicesTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="serviceDateColumn" text="Date" prefWidth="100"/>
+                    <TableColumn fx:id="serviceDescriptionColumn" text="Service" prefWidth="250"/>
+                    <TableColumn fx:id="serviceAmountColumn" text="Amount" prefWidth="100"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </VBox>
+</HBox>

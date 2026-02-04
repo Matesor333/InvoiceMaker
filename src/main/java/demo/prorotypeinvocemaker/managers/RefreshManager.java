@@ -1,16 +1,24 @@
 package demo.prorotypeinvocemaker.managers;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RefreshManager {
-    // A single runnable task that any controller can set or call
-    private static Runnable refreshTask;
+    private static final List<Runnable> refreshTasks = new ArrayList<>();
 
-    public static void setRefreshTask(Runnable task) {
-        refreshTask = task;
+    public static synchronized void addRefreshTask(Runnable task) {
+        if (!refreshTasks.contains(task)) {
+            refreshTasks.add(task);
+        }
     }
 
-    public static void triggerRefresh() {
-        if (refreshTask != null) {
-            refreshTask.run();
+    @Deprecated
+    public static void setRefreshTask(Runnable task) {
+        addRefreshTask(task);
+    }
+
+    public static synchronized void triggerRefresh() {
+        for (Runnable task : refreshTasks) {
+            task.run();
         }
     }
 }

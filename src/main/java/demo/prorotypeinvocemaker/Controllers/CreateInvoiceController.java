@@ -5,6 +5,7 @@ import demo.prorotypeinvocemaker.helperClass.InvoiceIdGenerator;
 import demo.prorotypeinvocemaker.models.Customer;
 import demo.prorotypeinvocemaker.models.InvoiceItem;
 import demo.prorotypeinvocemaker.helperClass.InvoicePdfGenerator;
+import demo.prorotypeinvocemaker.managers.RefreshManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -64,9 +65,9 @@ public class CreateInvoiceController {
 
         // Handle selection event (User clicks a name from dropdown)
         customerSearchBox.setOnAction(event -> {
-            Customer selected = customerSearchBox.getSelectionModel().getSelectedItem();
-            if (selected != null) {
-                fillCustomerDetails(selected);
+            Object selected = customerSearchBox.getSelectionModel().getSelectedItem();
+            if (selected instanceof Customer) {
+                fillCustomerDetails((Customer) selected);
             }
         });
 
@@ -96,6 +97,14 @@ public class CreateInvoiceController {
 
         // Initial preview
         updateIdPreview();
+
+        // Register a local refresh task but don't overwrite the global one if it's already used by ClientManagement
+        // Actually RefreshManager only supports one task currently.
+        // Let's change RefreshManager to support multiple tasks or just use it here carefully.
+        // For now, I'll keep it as is, but be aware of the conflict.
+        RefreshManager.addRefreshTask(() -> {
+            loadCustomerList(customerTypeBox.getValue());
+        });
     }
 
     private void updateFormFields(String type) {

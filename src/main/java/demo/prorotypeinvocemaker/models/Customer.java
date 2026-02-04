@@ -11,12 +11,20 @@ public class Customer implements Serializable {
     private String id; // Company ID or Person ID
     private String vat;
     private String type; // "Company" or "Person"
+    private String note;
+
+    private static final long serialVersionUID = 1L;
 
     // Default constructor for JSON
     public Customer() {}
 
     public Customer(String name, String address, String city, String postcode,
                     String country, String id, String vat, String type) {
+        this(name, address, city, postcode, country, id, vat, type, "");
+    }
+
+    public Customer(String name, String address, String city, String postcode,
+                    String country, String id, String vat, String type, String note) {
         this.name = name;
         this.address = address;
         this.city = city;
@@ -25,6 +33,7 @@ public class Customer implements Serializable {
         this.id = id;
         this.vat = vat;
         this.type = type;
+        this.note = note;
     }
 
     // Getters and Setters (Standard)
@@ -44,6 +53,9 @@ public class Customer implements Serializable {
     public void setVat(String vat) { this.vat = vat; }
     public String getType() { return type; }
     public void setType(String type) { this.type = type; }
+
+    public String getNote() { return note; }
+    public void setNote(String note) { this.note = note; }
 
     @Override
     public String toString() {

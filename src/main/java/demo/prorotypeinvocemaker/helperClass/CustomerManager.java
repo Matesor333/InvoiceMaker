@@ -22,6 +22,16 @@ public class CustomerManager {
         saveCustomers();
     }
 
+    public List<Customer> getAllCustomers() {
+        return new ArrayList<>(customers);
+    }
+
+    public void deleteCustomer(Customer customer) {
+        customers.removeIf(c -> c.getName().equalsIgnoreCase(customer.getName())
+                && c.getType().equals(customer.getType()));
+        saveCustomers();
+    }
+
     public List<Customer> getCustomersByType(String type) {
         return customers.stream()
                 .filter(c -> c.getType().equalsIgnoreCase(type))
