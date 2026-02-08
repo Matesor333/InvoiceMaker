@@ -51,8 +51,14 @@ public class SupabaseClient {
         try {
             String jsonBody = mapper.writeValueAsString(customer);
 
+            // Use the internalId for updates if present
+            String uri = SUPABASE_URL + "/rest/v1/customers";
+            if (customer.getInternalId() != null) {
+                uri += "?id=eq." + customer.getInternalId();
+            }
+
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(SUPABASE_URL + "/rest/v1/customers"))
+                    .uri(URI.create(uri))
                     .header("apikey", API_KEY)
                     .header("Authorization", "Bearer " + API_KEY)
                     .header("Content-Type", "application/json")

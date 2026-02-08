@@ -214,16 +214,36 @@ public class CreateInvoiceController {
         }
 
         if (selectedCustomer == null) {
-            selectedCustomer = new Customer(
-                    customerName,
-                    addressField.getText(),
-                    cityField.getText(),
-                    postcodeField.getText(),
-                    countryField.getText(),
-                    idField.getText(),
-                    vatField.getText(),
-                    customerTypeBox.getValue()
-            );
+            // Check if customer with this reg number already exists to avoid duplication
+            String regNum = idField.getText();
+            if (regNum != null && !regNum.trim().isEmpty()) {
+                selectedCustomer = customerManager.getAllCustomers().stream()
+                        .filter(c -> regNum.equals(c.getId()))
+                        .findFirst()
+                        .orElse(null);
+            }
+            
+            if (selectedCustomer == null) {
+                selectedCustomer = new Customer(
+                        customerName,
+                        addressField.getText(),
+                        cityField.getText(),
+                        postcodeField.getText(),
+                        countryField.getText(),
+                        regNum,
+                        vatField.getText(),
+                        customerTypeBox.getValue()
+                );
+            } else {
+                // Update the existing customer with potentially new info from fields
+                selectedCustomer.setName(customerName);
+                selectedCustomer.setAddress(addressField.getText());
+                selectedCustomer.setCity(cityField.getText());
+                selectedCustomer.setPostcode(postcodeField.getText());
+                selectedCustomer.setCountry(countryField.getText());
+                selectedCustomer.setVat(vatField.getText());
+                selectedCustomer.setType(customerTypeBox.getValue());
+            }
         } else {
             // Update existing customer info from fields
             selectedCustomer.setAddress(addressField.getText());
@@ -240,11 +260,13 @@ public class CreateInvoiceController {
         // Or we can rely on the fact that if it's already in the DB, we might need its UUID.
         // Let's try to find it by name or reg number if internalId is null.
         if (selectedCustomer.getInternalId() == null) {
+            String finalRegNumber = selectedCustomer.getId();
+            String finalCustomerName = selectedCustomer.getName();
+            
             List<Customer> all = customerManager.getAllCustomers();
-            String finalCustomerName = customerName;
-            String finalRegNumber = idField.getText();
             selectedCustomer = all.stream()
-                    .filter(c -> c.getName().equals(finalCustomerName) || (finalRegNumber != null && !finalRegNumber.isEmpty() && finalRegNumber.equals(c.getId())))
+                    .filter(c -> (finalRegNumber != null && !finalRegNumber.isEmpty() && finalRegNumber.equals(c.getId())) 
+                              || (finalCustomerName != null && finalCustomerName.equals(c.getName())))
                     .findFirst()
                     .orElse(selectedCustomer);
         }
