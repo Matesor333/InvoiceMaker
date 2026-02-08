@@ -2,7 +2,9 @@ package demo.prorotypeinvocemaker.Controllers;
 
 import demo.prorotypeinvocemaker.helperClass.CustomerManager;
 import demo.prorotypeinvocemaker.helperClass.InvoiceIdGenerator;
+import demo.prorotypeinvocemaker.managers.SupabaseClient;
 import demo.prorotypeinvocemaker.models.Customer;
+import demo.prorotypeinvocemaker.models.Invoice;
 import demo.prorotypeinvocemaker.models.InvoiceItem;
 import demo.prorotypeinvocemaker.helperClass.InvoicePdfGenerator;
 import demo.prorotypeinvocemaker.managers.RefreshManager;
@@ -49,6 +51,7 @@ public class CreateInvoiceController {
 
     private final ObservableList<InvoiceItem> invoiceItems = FXCollections.observableArrayList();
     private final CustomerManager customerManager = new CustomerManager();
+    private final SupabaseClient supabaseClient = new SupabaseClient();
     @FXML
     public void initialize() {
         // Setup Customer Type ChoiceBox
@@ -196,9 +199,11 @@ public class CreateInvoiceController {
         // Validate customer fields
         String customerName = "";
         Object value = customerSearchBox.getValue();
+        Customer selectedCustomer = null;
 
         if (value instanceof Customer) {
-            customerName = ((Customer) value).getName();
+            selectedCustomer = (Customer) value;
+            customerName = selectedCustomer.getName();
         } else if (value instanceof String) {
             customerName = (String) value;
         }
@@ -208,17 +213,43 @@ public class CreateInvoiceController {
             return;
         }
 
-        Customer currentCustomer = new Customer(
-                customerName,
-                addressField.getText(),
-                cityField.getText(),
-                postcodeField.getText(),
-                countryField.getText(),
-                idField.getText(),
-                vatField.getText(),
-                customerTypeBox.getValue()
-        );
-        customerManager.addOrUpdateCustomer(currentCustomer);
+        if (selectedCustomer == null) {
+            selectedCustomer = new Customer(
+                    customerName,
+                    addressField.getText(),
+                    cityField.getText(),
+                    postcodeField.getText(),
+                    countryField.getText(),
+                    idField.getText(),
+                    vatField.getText(),
+                    customerTypeBox.getValue()
+            );
+        } else {
+            // Update existing customer info from fields
+            selectedCustomer.setAddress(addressField.getText());
+            selectedCustomer.setCity(cityField.getText());
+            selectedCustomer.setPostcode(postcodeField.getText());
+            selectedCustomer.setCountry(countryField.getText());
+            selectedCustomer.setId(idField.getText());
+            selectedCustomer.setVat(vatField.getText());
+        }
+
+        customerManager.addOrUpdateCustomer(selectedCustomer);
+
+        // Fetch the customer again to make sure we have the internal UUID if it was just created
+        // Or we can rely on the fact that if it's already in the DB, we might need its UUID.
+        // Let's try to find it by name or reg number if internalId is null.
+        if (selectedCustomer.getInternalId() == null) {
+            List<Customer> all = customerManager.getAllCustomers();
+            String finalCustomerName = customerName;
+            String finalRegNumber = idField.getText();
+            selectedCustomer = all.stream()
+                    .filter(c -> c.getName().equals(finalCustomerName) || (finalRegNumber != null && !finalRegNumber.isEmpty() && finalRegNumber.equals(c.getId())))
+                    .findFirst()
+                    .orElse(selectedCustomer);
+        }
+
+        final Customer finalCustomer = selectedCustomer;
 
         // Reload list to include the new one immediately
         loadCustomerList(customerTypeBox.getValue());
@@ -247,6 +278,29 @@ public class CreateInvoiceController {
         try {
             // Generate unique invoice ID
             String invoiceId = InvoiceIdGenerator.generateId(customerTypeBox.getValue());
+
+            // Save to Supabase
+            double total = 0;
+            for (InvoiceItem item : invoiceItems) {
+                total += item.getAmount();
+            }
+            String filename = "invoice_" + invoiceId.replaceAll("[^a-zA-Z0-9]", "_") + ".pdf";
+
+            String currency = currencyBox.getValue();
+            if (currency != null && currency.contains(" ")) {
+                currency = currency.substring(0, currency.indexOf(" ")); // Extract "USD", "EUR", "GBP"
+            }
+
+            Invoice invoice = new Invoice(
+                    invoiceId,
+                    finalCustomer.getInternalId(), // Use the UUID from Supabase
+                    LocalDate.now().toString(),
+                    total,
+                    currency,
+                    filename,
+                    dueDatePicker.getValue() != null ? dueDatePicker.getValue().toString() : ""
+            );
+            supabaseClient.upsertInvoice(invoice);
 
             Locale locale = new Locale("en", "US");
             if ("Slovak".equals(languageBox.getValue())) {

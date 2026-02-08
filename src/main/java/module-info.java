@@ -7,6 +7,8 @@ module demo.prorotypeinvocemaker {
     requires kernel;
     requires java.desktop;
     requires io;
+    requires com.fasterxml.jackson.databind;
+    requires java.net.http;
 
     opens demo.prorotypeinvocemaker to javafx.fxml;
     exports demo.prorotypeinvocemaker;

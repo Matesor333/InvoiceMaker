@@ -1,26 +1,23 @@
 package demo.prorotypeinvocemaker.helperClass;
 
-import java.io.*;
+import demo.prorotypeinvocemaker.managers.SupabaseClient;
+import demo.prorotypeinvocemaker.models.Customer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import demo.prorotypeinvocemaker.models.Customer;
+
 public class CustomerManager {
-    private static final String FILE_NAME = "customers.dat";
+    private final SupabaseClient supabaseClient;
     private List<Customer> customers;
 
     public CustomerManager() {
+        this.supabaseClient = new SupabaseClient();
         customers = loadCustomers();
     }
 
     public void addOrUpdateCustomer(Customer newCustomer) {
+        supabaseClient.upsertCustomer(newCustomer);
         customers = loadCustomers();
-        // Check if customer exists (by name and type) and update
-        customers.removeIf(c -> c.getName().equalsIgnoreCase(newCustomer.getName())
-                && c.getType().equals(newCustomer.getType()));
-
-        customers.add(newCustomer);
-        saveCustomers();
     }
 
     public List<Customer> getAllCustomers() {
@@ -29,10 +26,8 @@ public class CustomerManager {
     }
 
     public void deleteCustomer(Customer customer) {
+        supabaseClient.deleteCustomer(customer.getId());
         customers = loadCustomers();
-        customers.removeIf(c -> c.getName().equalsIgnoreCase(customer.getName())
-                && c.getType().equals(customer.getType()));
-        saveCustomers();
     }
 
     public List<Customer> getCustomersByType(String type) {
@@ -42,24 +37,7 @@ public class CustomerManager {
                 .collect(Collectors.toList());
     }
 
-    private void saveCustomers() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
-            oos.writeObject(customers);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @SuppressWarnings("unchecked")
     private List<Customer> loadCustomers() {
-        File file = new File(FILE_NAME);
-        if (file.exists()) {
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-                return (List<Customer>) ois.readObject();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return new ArrayList<>();
+        return supabaseClient.getAllCustomers();
     }
 }

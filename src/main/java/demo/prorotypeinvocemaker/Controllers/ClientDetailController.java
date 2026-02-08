@@ -4,7 +4,9 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import demo.prorotypeinvocemaker.helperClass.InvoiceRecord;
+import demo.prorotypeinvocemaker.managers.SupabaseClient;
 import demo.prorotypeinvocemaker.models.Customer;
+import demo.prorotypeinvocemaker.models.Invoice;
 import javafx.scene.control.TextArea;
 import demo.prorotypeinvocemaker.helperClass.CustomerManager;
 import javafx.application.Platform;
@@ -54,6 +56,7 @@ public class ClientDetailController {
     private Customer customer;
     private final ObservableList<InvoiceRecord> invoiceList = FXCollections.observableArrayList();
     private final ObservableList<ServiceDetail> serviceList = FXCollections.observableArrayList();
+    private final SupabaseClient supabaseClient = new SupabaseClient();
 
     @FXML
     public void initialize() {
@@ -198,22 +201,40 @@ public class ClientDetailController {
     }
 
     private void loadClientData() {
+        java.util.List<Invoice> allInvoices = supabaseClient.getAllInvoices();
         String saveLocation = loadSaveLocation();
-        File folder = new File(saveLocation);
-        if (!folder.exists()) return;
 
-        File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".pdf"));
-        if (files == null) return;
-
-        for (File file : files) {
-            try {
-                InvoiceRecord record = extractInvoiceData(file);
-                if (record != null && record.getCustomer().equalsIgnoreCase(customer.getName())) {
-                    invoiceList.add(record);
-                    extractAndAddServices(file, record.getDate());
+        for (Invoice invoice : allInvoices) {
+            // Filter by customer_id if available, otherwise fallback to name-based logic if we have enough info
+            if (invoice.getCustomerId() != null && invoice.getCustomerId().equals(customer.getInternalId())) {
+                LocalDate date;
+                try {
+                    date = LocalDate.parse(invoice.getIssueDate());
+                } catch (Exception e) {
+                    date = LocalDate.now();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+
+                String dateStr = date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+                String totalStr = String.format("%.2f", invoice.getTotalAmount());
+                File pdfFile = null;
+                if (saveLocation != null && !saveLocation.isEmpty()) {
+                    pdfFile = new File(saveLocation, invoice.getPdfUrl());
+                }
+
+                InvoiceRecord record = new InvoiceRecord(
+                        invoice.getInvoiceNumber(),
+                        customer.getType(),
+                        customer.getName(),
+                        dateStr,
+                        totalStr,
+                        pdfFile,
+                        date
+                );
+                invoiceList.add(record);
+
+                if (pdfFile != null && pdfFile.exists()) {
+                    extractAndAddServices(pdfFile, record.getDate());
+                }
             }
         }
     }

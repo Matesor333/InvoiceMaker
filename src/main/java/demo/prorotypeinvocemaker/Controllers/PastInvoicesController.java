@@ -3,6 +3,9 @@ package demo.prorotypeinvocemaker.Controllers;
 import demo.prorotypeinvocemaker.helperClass.InvoiceRecord;
 import demo.prorotypeinvocemaker.managers.FolderWatcher;
 import demo.prorotypeinvocemaker.managers.RefreshManager;
+import demo.prorotypeinvocemaker.managers.SupabaseClient;
+import demo.prorotypeinvocemaker.models.Customer;
+import demo.prorotypeinvocemaker.models.Invoice;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -37,6 +40,7 @@ public class PastInvoicesController {
     private ObservableList<InvoiceRecord> allInvoices = FXCollections.observableArrayList();
     private FilteredList<InvoiceRecord> filteredInvoices;
     private final FolderWatcher folderWatcher = new FolderWatcher(); // <--- NEW INSTANCE
+    private final SupabaseClient supabaseClient = new SupabaseClient();
     @FXML
     public void initialize() {
         // Setup table columns
@@ -93,29 +97,48 @@ public class PastInvoicesController {
     private void loadInvoices() {
         allInvoices.clear();
 
+        java.util.List<Invoice> invoices = supabaseClient.getAllInvoices();
+        java.util.List<Customer> customers = supabaseClient.getAllCustomers();
         String saveLocation = loadSaveLocation();
-        if (saveLocation == null || saveLocation.isEmpty()) {
-            return;
-        }
 
-        File folder = new File(saveLocation);
-        if (!folder.exists() || !folder.isDirectory()) {
-            return;
-        }
-
-        File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".pdf"));
-        if (files == null) return;
-
-        for (File file : files) {
-            try {
-                InvoiceRecord record = extractInvoiceData(file);
-                if (record != null) {
-                    allInvoices.add(record);
-                }
-            } catch (Exception e) {
-                System.err.println("Error reading: " + file.getName());
-                e.printStackTrace();
+        for (Invoice invoice : invoices) {
+            File pdfFile = null;
+            if (saveLocation != null && !saveLocation.isEmpty()) {
+                pdfFile = new File(saveLocation, invoice.getPdfUrl());
             }
+
+            LocalDate date;
+            try {
+                date = LocalDate.parse(invoice.getIssueDate());
+            } catch (Exception e) {
+                date = LocalDate.now();
+            }
+
+            String dateStr = date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            String totalStr = String.format("%.2f", invoice.getTotalAmount());
+
+            // Find customer name by ID
+            String customerName = "Unknown Customer";
+            String customerType = "Unknown";
+            if (customers != null) {
+                for (Customer c : customers) {
+                    if (c.getInternalId() != null && c.getInternalId().equals(invoice.getCustomerId())) {
+                        customerName = c.getName();
+                        customerType = c.getType();
+                        break;
+                    }
+                }
+            }
+
+            allInvoices.add(new InvoiceRecord(
+                    invoice.getInvoiceNumber(),
+                    customerType,
+                    customerName,
+                    dateStr,
+                    totalStr,
+                    pdfFile,
+                    date
+            ));
         }
     }
 

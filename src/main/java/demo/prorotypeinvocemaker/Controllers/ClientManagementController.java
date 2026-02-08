@@ -1,6 +1,6 @@
 package demo.prorotypeinvocemaker.Controllers;
 
-import demo.prorotypeinvocemaker.helperClass.CustomerManager;
+import demo.prorotypeinvocemaker.managers.SupabaseClient;
 import demo.prorotypeinvocemaker.models.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 public class ClientManagementController {
@@ -24,13 +25,15 @@ public class ClientManagementController {
     @FXML private TableColumn<Customer, String> addressColumn;
     @FXML private TableColumn<Customer, String> idColumn;
 
-    private CustomerManager customerManager;
+
+    private SupabaseClient supabaseClient;
     private ObservableList<Customer> clientList;
 
     @FXML
     public void initialize() {
-        customerManager = new CustomerManager();
-        
+
+        supabaseClient = new SupabaseClient();
+
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         cityColumn.setCellValueFactory(new PropertyValueFactory<>("city"));
@@ -49,6 +52,7 @@ public class ClientManagementController {
         });
 
         loadClients();
+        // auto-refresh if needed, but careful with API limits on Supabase free tier
         demo.prorotypeinvocemaker.managers.RefreshManager.addRefreshTask(this::loadClients);
     }
 
@@ -70,8 +74,11 @@ public class ClientManagementController {
         }
     }
 
+
     private void loadClients() {
-        clientList = FXCollections.observableArrayList(customerManager.getAllCustomers());
+
+        List<Customer> customers = supabaseClient.getAllCustomers();
+        clientList = FXCollections.observableArrayList(customers);
         clientTable.setItems(clientList);
     }
 
@@ -101,7 +108,8 @@ public class ClientManagementController {
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
-                customerManager.deleteCustomer(selectedClient);
+
+                supabaseClient.deleteCustomer(selectedClient.getId());
                 loadClients();
             }
         } else {
@@ -156,7 +164,6 @@ public class ClientManagementController {
             countryField.setText(customer.getCountry());
             idField.setText(customer.getId());
             vatField.setText(customer.getVat());
-            // When editing, name and type might be used as keys in CustomerManager.addOrUpdateCustomer
         } else {
             typeComboBox.setValue("Company");
         }
@@ -165,7 +172,8 @@ public class ClientManagementController {
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == saveButtonType) {
-                return new Customer(
+
+                Customer newCustomer = new Customer(
                         nameField.getText(),
                         addressField.getText(),
                         cityField.getText(),
@@ -176,6 +184,13 @@ public class ClientManagementController {
                         typeComboBox.getValue(),
                         customer != null ? customer.getNote() : ""
                 );
+
+
+                if (customer != null) {
+                    newCustomer.setInternalId(customer.getInternalId());
+                }
+
+                return newCustomer;
             }
             return null;
         });
@@ -184,7 +199,8 @@ public class ClientManagementController {
 
         Optional<Customer> result = dialog.showAndWait();
         result.ifPresent(newCustomer -> {
-            customerManager.addOrUpdateCustomer(newCustomer);
+
+            supabaseClient.upsertCustomer(newCustomer);
             loadClients();
         });
     }
