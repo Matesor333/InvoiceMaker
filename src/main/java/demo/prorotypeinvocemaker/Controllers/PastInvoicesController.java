@@ -54,6 +54,24 @@ public class PastInvoicesController {
         filteredInvoices = new FilteredList<>(allInvoices, p -> true);
         invoiceTable.setItems(filteredInvoices);
 
+        // Double-click to open PDF
+        invoiceTable.setRowFactory(tv -> {
+            TableRow<InvoiceRecord> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    InvoiceRecord rec = row.getItem();
+                    if (rec != null && rec.getFile() != null) {
+                        try {
+                            Desktop.getDesktop().open(rec.getFile());
+                        } catch (Exception e) {
+                            showAlert("Error", "Could not open PDF: " + e.getMessage());
+                        }
+                    }
+                }
+            });
+            return row;
+        });
+
         // Add listeners for live filtering
         searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
         typeFilterBox.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());

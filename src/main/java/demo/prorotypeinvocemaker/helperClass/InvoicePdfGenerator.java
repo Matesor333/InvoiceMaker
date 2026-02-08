@@ -92,7 +92,7 @@ public class InvoicePdfGenerator {
         Cell invoiceDetailsCell = new Cell().setBorder(com.itextpdf.layout.borders.Border.NO_BORDER);
         invoiceDetailsCell.setTextAlignment(TextAlignment.RIGHT);
         invoiceDetailsCell.add(new Paragraph("Invoice #: " + invoiceId).setBold());
-        invoiceDetailsCell.add(new Paragraph(messages.getString("invoice.date") + " " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
+        invoiceDetailsCell.add(new Paragraph(LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
         invoiceDetailsCell.add(new Paragraph(messages.getString("invoice.due") + " " + dueDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
         headerTable.addCell(invoiceDetailsCell);
 

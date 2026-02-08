@@ -2,26 +2,33 @@
 .root {
     -fx-font-family: 'Segoe UI', sans-serif;
     -fx-font-size: 14px;
-    -fx-background-color: #f4f6f8; /* Light gray background */
+    -fx-background-color: #1a1a1a; /* Dark background */
+    -fx-base: #1a1a1a;
+    -fx-control-inner-background: #2a2a2a;
+    -fx-text-base-color: #e0e0e0;
+}
+
+.label {
+    -fx-text-fill: #e0e0e0;
 }
 
 /* HEADERS */
 .header-label {
     -fx-font-size: 24px;
     -fx-font-weight: bold;
-    -fx-text-fill: #2c3e50;
+    -fx-text-fill: #ffffff;
     -fx-padding: 0 0 15 0;
 }
 
 .subheader-label {
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-    -fx-text-fill: #7f8c8d;
+    -fx-text-fill: #b0b0b0;
 }
 
 /* TABS */
 .tab-pane .tab-header-area .tab-header-background {
-    -fx-background-color: transparent;
+    -fx-background-color: #252525;
 }
 
 .tab-pane .tab {
@@ -32,6 +39,7 @@
 }
 
 .tab-pane .tab:selected {
+    -fx-background-color: #333333;
     -fx-border-color: #3498db; /* Active tab underline */
 }
 
@@ -46,30 +54,51 @@
 }
 
 .tab-content-area {
-    -fx-background-color: white;
+    -fx-background-color: #252525;
     -fx-padding: 20;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 0);
     -fx-background-radius: 5;
 }
 
 /* INPUT FIELDS */
-.text-field, .date-picker .text-field, .choice-box {
-    -fx-background-color: white;
-    -fx-border-color: #dce4ec;
+.text-field, .date-picker .text-field, .choice-box, .combo-box-base, .text-area {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: white;
+    -fx-border-color: #555;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
     -fx-padding: 8;
 }
 
-.text-field:focused, .date-picker:focused .text-field, .choice-box:focused {
-    -fx-border-color: #3498db;
-    -fx-background-color: white;
+/* This specifically targets the prompt text */
+.text-input {
+    -fx-prompt-text-fill: #aaaaaa; /* Much lighter gray */
 }
+
+/* Fix for ComboBox prompt text specifically */
+.combo-box-base > .arrow-button {
+    -fx-background-color: transparent;
+}
+.combo-box-base > .arrow-button > .arrow {
+    -fx-background-color: #a0a0a0;
+}
+.combo-box .list-cell {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: white;
+}
+
+/* Focus State */
+.text-field:focused, .date-picker:focused .text-field, .choice-box:focused, .combo-box-base:focused, .text-area:focused {
+    -fx-border-color: #3daafc;
+    -fx-background-color: #45494b;
+    -fx-effect: dropshadow(gaussian, rgba(61, 170, 252, 0.4), 5, 0, 0, 0);
+}
+
 
 /* BUTTONS */
 .button {
-    -fx-background-color: #ecf0f1;
-    -fx-text-fill: #2c3e50;
+    -fx-background-color: #3d3d3d;
+    -fx-text-fill: #e0e0e0;
     -fx-padding: 8 16;
     -fx-background-radius: 4;
     -fx-cursor: hand;
@@ -77,7 +106,7 @@
 }
 
 .button:hover {
-    -fx-background-color: #bdc3c7;
+    -fx-background-color: #4d4d4d;
 }
 
 .primary-button {
@@ -90,21 +119,21 @@
 }
 
 .danger-button {
-    -fx-background-color: #e74c3c;
+    -fx-background-color: #c0392b;
     -fx-text-fill: white;
 }
 
 /* TABLES */
 .table-view {
-    -fx-background-color: transparent;
-    -fx-border-color: #dce4ec;
+    -fx-background-color: #252525;
+    -fx-border-color: #444444;
     -fx-border-radius: 4;
 }
 
 .table-view .column-header-background {
-    -fx-background-color: #ecf0f1;
+    -fx-background-color: #333333;
     -fx-border-width: 0 0 1 0;
-    -fx-border-color: #dce4ec;
+    -fx-border-color: #444444;
 }
 
 .table-view .column-header {
@@ -112,11 +141,25 @@
     -fx-padding: 10;
 }
 
+.table-view .column-header .label {
+    -fx-text-fill: #b0b0b0;
+}
+
+.table-row-cell {
+    -fx-background-color: #252525;
+    -fx-text-fill: #e0e0e0;
+}
+
 .table-row-cell:odd {
-    -fx-background-color: #f9fbfd;
+    -fx-background-color: #2a2a2a;
 }
 
 .table-row-cell:selected {
-    -fx-background-color: #eaf2f8;
-    -fx-text-fill: black;
+    -fx-background-color: #34495e;
+    -fx-text-fill: white;
+}
+
+/* ADDITIONAL ELEMENTS */
+.separator *.line {
+    -fx-border-color: #444444;
 }

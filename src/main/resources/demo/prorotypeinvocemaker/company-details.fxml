@@ -106,7 +106,7 @@
     <Separator/>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Label fx:id="statusLabel" style="-fx-text-fill: green;"/>
+        <Label fx:id="statusLabel" style="-fx-text-fill: #2ecc71;"/>
         <Button text="Reset" onAction="#handleReset" styleClass="button"/>
         <Button text="Save Company Details" onAction="#handleSave" styleClass="primary-button"/>
     </HBox>

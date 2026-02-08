@@ -12,7 +12,7 @@
     <Label text="Past Invoices" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
 
     <!-- Filters Section -->
-    <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 10; -fx-background-color: #f5f5f5; -fx-background-radius: 5;">
+    <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 10; -fx-background-color: #2a2a2a; -fx-background-radius: 5;">
 
         <!-- Search Field -->
         <VBox spacing="5">
@@ -61,7 +61,7 @@
 
     <!-- Action Buttons -->
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button text="Open PDF" onAction="#handleOpenPdf" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+        <Button text="Open PDF" onAction="#handleOpenPdf" styleClass="primary-button"/>
         <Button text="Open Folder" onAction="#handleOpenFolder"/>
     </HBox>
 

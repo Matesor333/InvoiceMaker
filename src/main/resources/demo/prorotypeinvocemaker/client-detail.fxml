@@ -41,7 +41,7 @@
             <Label fx:id="vatLabel" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
 
             <Label text="Note:" GridPane.rowIndex="8" GridPane.columnIndex="0" styleClass="subheader-label"/>
-            <Label fx:id="noteLabel" GridPane.rowIndex="8" GridPane.columnIndex="1" wrapText="true"/>
+            <TextArea fx:id="noteArea" GridPane.rowIndex="8" GridPane.columnIndex="1" wrapText="true" prefRowCount="3"/>
         </GridPane>
         <Region VBox.vgrow="ALWAYS"/>
         <Button text="Edit Client" onAction="#handleEditClient" maxWidth="Infinity" styleClass="primary-button"/>

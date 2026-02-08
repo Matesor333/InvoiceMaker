@@ -14,6 +14,7 @@ public class CustomerManager {
     }
 
     public void addOrUpdateCustomer(Customer newCustomer) {
+        customers = loadCustomers();
         // Check if customer exists (by name and type) and update
         customers.removeIf(c -> c.getName().equalsIgnoreCase(newCustomer.getName())
                 && c.getType().equals(newCustomer.getType()));
@@ -23,16 +24,19 @@ public class CustomerManager {
     }
 
     public List<Customer> getAllCustomers() {
+        customers = loadCustomers();
         return new ArrayList<>(customers);
     }
 
     public void deleteCustomer(Customer customer) {
+        customers = loadCustomers();
         customers.removeIf(c -> c.getName().equalsIgnoreCase(customer.getName())
                 && c.getType().equals(customer.getType()));
         saveCustomers();
     }
 
     public List<Customer> getCustomersByType(String type) {
+        customers = loadCustomers();
         return customers.stream()
                 .filter(c -> c.getType().equalsIgnoreCase(type))
                 .collect(Collectors.toList());

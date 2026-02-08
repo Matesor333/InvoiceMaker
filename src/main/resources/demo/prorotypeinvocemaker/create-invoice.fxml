@@ -7,7 +7,7 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="demo.prorotypeinvocemaker.Controllers.CreateInvoiceController"
-      spacing="15" style="-fx-padding: 20;">
+      spacing="15" styleClass="tab-content-area">
 
 
     <Label text="New Invoice" styleClass="header-label"/>
@@ -25,8 +25,8 @@
         <HBox spacing="20" alignment="CENTER_LEFT">
             <Region HBox.hgrow="ALWAYS" />
             <VBox alignment="CENTER_RIGHT">
-                <Label text="Invoice ID (Preview):" style="-fx-font-size: 10px;"/>
-                <Label fx:id="invoiceIdLabel" text="---" style="-fx-font-weight: bold;"/>
+                <Label text="Invoice ID (Preview):" style="-fx-font-size: 10px; -fx-text-fill: #b0b0b0;"/>
+                <Label fx:id="invoiceIdLabel" text="---" style="-fx-font-weight: bold; -fx-text-fill: #3498db;"/>
             </VBox>
         </HBox>
         <HBox spacing="10" alignment="CENTER_LEFT">

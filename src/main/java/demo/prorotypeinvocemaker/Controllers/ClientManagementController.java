@@ -127,8 +127,6 @@ public class ClientManagementController {
         TextField countryField = new TextField();
         TextField idField = new TextField();
         TextField vatField = new TextField();
-        TextArea noteArea = new TextArea();
-        noteArea.setPrefRowCount(3);
         ComboBox<String> typeComboBox = new ComboBox<>();
         typeComboBox.setItems(FXCollections.observableArrayList("Company", "Person"));
 
@@ -148,8 +146,6 @@ public class ClientManagementController {
         grid.add(idField, 1, 6);
         grid.add(new Label("VAT/DIČ:"), 0, 7);
         grid.add(vatField, 1, 7);
-        grid.add(new Label("Note:"), 0, 8);
-        grid.add(noteArea, 1, 8);
 
         if (customer != null) {
             typeComboBox.setValue(customer.getType());
@@ -160,7 +156,6 @@ public class ClientManagementController {
             countryField.setText(customer.getCountry());
             idField.setText(customer.getId());
             vatField.setText(customer.getVat());
-            noteArea.setText(customer.getNote());
             // When editing, name and type might be used as keys in CustomerManager.addOrUpdateCustomer
         } else {
             typeComboBox.setValue("Company");
@@ -179,7 +174,7 @@ public class ClientManagementController {
                         idField.getText(),
                         vatField.getText(),
                         typeComboBox.getValue(),
-                        noteArea.getText()
+                        customer != null ? customer.getNote() : ""
                 );
             }
             return null;

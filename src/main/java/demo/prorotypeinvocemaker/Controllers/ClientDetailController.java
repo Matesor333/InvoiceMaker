@@ -5,6 +5,11 @@ import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
 import demo.prorotypeinvocemaker.helperClass.InvoiceRecord;
 import demo.prorotypeinvocemaker.models.Customer;
+import javafx.scene.control.TextArea;
+import demo.prorotypeinvocemaker.helperClass.CustomerManager;
+import javafx.application.Platform;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -31,7 +36,10 @@ public class ClientDetailController {
     @FXML private Label countryLabel;
     @FXML private Label idLabel;
     @FXML private Label vatLabel;
-    @FXML private Label noteLabel;
+    @FXML private TextArea noteArea;
+
+    private final ExecutorService saveExecutor = Executors.newVirtualThreadPerTaskExecutor();
+    private final CustomerManager customerManager = new CustomerManager();
 
     @FXML private TableView<InvoiceRecord> invoicesTable;
     @FXML private TableColumn<InvoiceRecord, String> invoiceIdColumn;
@@ -59,12 +67,49 @@ public class ClientDetailController {
 
         invoicesTable.setItems(invoiceList);
         servicesTable.setItems(serviceList);
+
+        // Add double-click listener to open invoice PDF
+        invoicesTable.setRowFactory(tv -> {
+            javafx.scene.control.TableRow<InvoiceRecord> row = new javafx.scene.control.TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    InvoiceRecord rowData = row.getItem();
+                    openInvoiceFile(rowData.getFile());
+                }
+            });
+            return row;
+        });
+    }
+
+    private void openInvoiceFile(File file) {
+        if (file == null || !file.exists()) {
+            return;
+        }
+        try {
+            if (java.awt.Desktop.isDesktopSupported()) {
+                java.awt.Desktop.getDesktop().open(file);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
         displayCustomerInfo();
+        setupNoteAutoSave();
         loadClientData();
+    }
+
+    private void setupNoteAutoSave() {
+        noteArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (customer != null) {
+                customer.setNote(newValue);
+                saveExecutor.submit(() -> {
+                    customerManager.addOrUpdateCustomer(customer);
+                });
+            }
+        });
     }
 
     private void displayCustomerInfo() {
@@ -76,7 +121,7 @@ public class ClientDetailController {
         countryLabel.setText(customer.getCountry());
         idLabel.setText(customer.getId());
         vatLabel.setText(customer.getVat());
-        noteLabel.setText(customer.getNote());
+        noteArea.setText(customer.getNote());
     }
 
     @FXML
@@ -102,8 +147,6 @@ public class ClientDetailController {
         javafx.scene.control.TextField countryField = new javafx.scene.control.TextField(customer.getCountry());
         javafx.scene.control.TextField idField = new javafx.scene.control.TextField(customer.getId());
         javafx.scene.control.TextField vatField = new javafx.scene.control.TextField(customer.getVat());
-        javafx.scene.control.TextArea noteArea = new javafx.scene.control.TextArea(customer.getNote());
-        noteArea.setPrefRowCount(3);
         javafx.scene.control.ComboBox<String> typeComboBox = new javafx.scene.control.ComboBox<>();
         typeComboBox.setItems(javafx.collections.FXCollections.observableArrayList("Company", "Person"));
         typeComboBox.setValue(customer.getType());
@@ -124,8 +167,6 @@ public class ClientDetailController {
         grid.add(idField, 1, 6);
         grid.add(new javafx.scene.control.Label("VAT/DIČ:"), 0, 7);
         grid.add(vatField, 1, 7);
-        grid.add(new javafx.scene.control.Label("Note:"), 0, 8);
-        grid.add(noteArea, 1, 8);
 
         dialog.getDialogPane().setContent(grid);
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/demo/prorotypeinvocemaker/styles.css").toExternalForm());
@@ -141,7 +182,7 @@ public class ClientDetailController {
                         idField.getText(),
                         vatField.getText(),
                         typeComboBox.getValue(),
-                        noteArea.getText()
+                        customer.getNote()
                 );
             }
             return null;
