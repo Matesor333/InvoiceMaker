@@ -98,6 +98,12 @@
                     <TextField fx:id="saveLocationField" editable="false" HBox.hgrow="ALWAYS"/>
                     <Button text="..." onAction="#handleBrowseLocation"/>
                 </HBox>
+
+                <Label text="Supabase URL:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="supabaseUrlField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Supabase Key:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="supabaseKeyField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
             </GridPane>
 
         </VBox>

@@ -12,15 +12,30 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class SupabaseClient {
-    private static final String SUPABASE_URL = "";
-    private static final String API_KEY = "";
+    private static String SUPABASE_URL = "";
+    private static String API_KEY = "";
 
     private final HttpClient client;
     private final ObjectMapper mapper;
 
     public SupabaseClient() {
+        loadConfig();
         this.client = HttpClient.newHttpClient();
         this.mapper = new ObjectMapper();
+    }
+
+    private void loadConfig() {
+        java.util.Properties properties = new java.util.Properties();
+        java.io.File configFile = new java.io.File("company-details.properties");
+        if (configFile.exists()) {
+            try (java.io.FileInputStream in = new java.io.FileInputStream(configFile)) {
+                properties.load(in);
+                SUPABASE_URL = properties.getProperty("supabaseUrl", "");
+                API_KEY = properties.getProperty("supabaseKey", "");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

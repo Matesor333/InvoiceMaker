@@ -25,6 +25,8 @@ public class CompanyDetailsController {
     @FXML private TextField taxNumberField;
     @FXML private Label statusLabel;
     @FXML private TextField saveLocationField;
+    @FXML private TextField supabaseUrlField;
+    @FXML private TextField supabaseKeyField;
     //NEW BANK FIELDS
     @FXML private TextField bankNameField;
     @FXML private TextField accountNameField;
@@ -51,6 +53,8 @@ public class CompanyDetailsController {
         properties.setProperty("phone", phoneField.getText());
         properties.setProperty("email", emailField.getText());
         properties.setProperty("taxNumber", taxNumberField.getText());
+        properties.setProperty("supabaseUrl", supabaseUrlField.getText());
+        properties.setProperty("supabaseKey", supabaseKeyField.getText());
         //BANK SAVE DETAILS
         properties.setProperty("saveLocation", saveLocationField.getText());
         properties.setProperty("bankName", bankNameField.getText());
@@ -95,6 +99,8 @@ public class CompanyDetailsController {
                 phoneField.setText(properties.getProperty("phone", ""));
                 emailField.setText(properties.getProperty("email", ""));
                 taxNumberField.setText(properties.getProperty("taxNumber", ""));
+                supabaseUrlField.setText(properties.getProperty("supabaseUrl", ""));
+                supabaseKeyField.setText(properties.getProperty("supabaseKey", ""));
 
                 // Load New Bank Details
                 bankNameField.setText(properties.getProperty("bankName", ""));

@@ -75,6 +75,11 @@ public class ClientManagementController {
     }
 
 
+    @FXML
+    private void handleRefresh() {
+        loadClients();
+    }
+
     private void loadClients() {
 
         List<Customer> customers = supabaseClient.getAllCustomers();

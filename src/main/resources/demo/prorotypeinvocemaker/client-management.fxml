@@ -14,6 +14,7 @@
 
     <HBox spacing="10">
         <Button text="Add Client" onAction="#handleAddClient" styleClass="primary-button"/>
+        <Button text="Refresh" onAction="#handleRefresh"/>
     </HBox>
 
     <TableView fx:id="clientTable" VBox.vgrow="ALWAYS">

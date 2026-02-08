@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="demo.prorotypeinvocemaker.Controllers.SupabaseConfigController"
+      spacing="20" alignment="CENTER" prefWidth="400" prefHeight="300"
+      style="-fx-background-color: white; -fx-padding: 30;">
+
+    <Label text="Supabase Configuration" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <Label text="Please enter your Supabase credentials to continue." wrapText="true" textAlignment="CENTER"/>
+
+    <GridPane hgap="10" vgap="15">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <Label text="Supabase URL:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="urlField" promptText="https://your-project.supabase.co" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <Label text="API Key:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <PasswordField fx:id="keyField" promptText="your-anon-key" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Save Folder:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <HBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <TextField fx:id="saveFolderField" editable="false" HBox.hgrow="ALWAYS" promptText="Select folder..."/>
+            <Button text="..." onAction="#handleBrowse"/>
+        </HBox>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Save and Continue" onAction="#handleSave" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"/>
+    </HBox>
+
+    <Label fx:id="errorLabel" style="-fx-text-fill: red;"/>
+</VBox>
